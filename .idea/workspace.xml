@@ -4,7 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e20c6af-5e04-459a-86c9-ece00ef9dfda" name="Changes" comment="Added Spring Project" />
+    <list default="true" id="7e20c6af-5e04-459a-86c9-ece00ef9dfda" name="Changes" comment="Added Spring Project">
+      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/config/AuthenticationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/config/OpenApiConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/config/WebConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/model/Account.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/model/AccountDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/model/Role.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/model/dto/AccountDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/model/dto/RegistrationDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/model/dto/SignInDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/model/mapper/AccountMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/repository/AccountRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/service/AccountDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/service/AccountServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/AccessGoods/src/main/java/accessgoods/service/interfaces/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,7 +46,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "jdk.selected.JAVA_MODULE": "openjdk-19",
-    "last_opened_file_path": "C:/Users/Kuba/IdeaProjects/Access_Goods",
+    "last_opened_file_path": "C:/Users/Kuba/IdeaProjects/Access_Goods/backend/AccessGoods",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -35,7 +54,8 @@
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2"
+    "project.structure.side.proportion": "0.2",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -48,6 +68,7 @@
       <updated>1697271849823</updated>
       <workItem from="1697271851290" duration="557000" />
       <workItem from="1697274295040" duration="412000" />
+      <workItem from="1698398149386" duration="661000" />
     </task>
     <servers />
   </component>
