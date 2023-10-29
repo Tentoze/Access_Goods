@@ -19,7 +19,7 @@ import static jakarta.persistence.CascadeType.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Account  {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -52,7 +52,6 @@ public class Account  {
 
     @Column
     private String password;
-
 
 
     public Account(String firstName, String lastName, String email, String phoneNumber, String password) {

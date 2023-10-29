@@ -22,9 +22,4 @@ public interface AccountMapper extends MapperBase<Account, AccountDto, Registrat
                 .email(entity.getEmail()).build();
     }
 
-    @Override
-    Account dtoToEntity(AccountDto accountDto);
-
-    @Override
-    Account postDtoToEntity(RegistrationDto registrationDto);
 }
