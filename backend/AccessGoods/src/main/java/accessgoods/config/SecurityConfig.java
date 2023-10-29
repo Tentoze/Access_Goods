@@ -102,7 +102,7 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers("swagger-ui/**", "swagger-ui**", "/v3/api-docs/**", "/v3/api-docs**")
                 .permitAll()
-                .requestMatchers("/stocks/**", "/restaurants/**", "/reservations/**", "/products/**", "/dishes/**", "/forms/**", "/jobOffers/**", "/menus/**", "/orders/**", "/tables/**", "/login/**", "/log-out/**", "/register/**", "/products/visible/**")
+                .requestMatchers("/categories/**", "/products/visible/**")
                 .permitAll()
                 .requestMatchers(format("%s/**", swaggerPath))
                 .permitAll()
