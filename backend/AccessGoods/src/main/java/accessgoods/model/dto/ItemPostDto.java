@@ -1,5 +1,7 @@
-package accessgoods.model;
+package accessgoods.model.dto;
 
+import accessgoods.model.Account;
+import accessgoods.model.Image;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,20 +10,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+public class ItemPostDto {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "category_id", nullable = false)
-    @Id
-    private Long id;
-    @Column
     private String name;
-    @Column
     private String description;
-
+    private Float cost;
+    private List<ImagePostDto> images;
+    private boolean isActive;
 }

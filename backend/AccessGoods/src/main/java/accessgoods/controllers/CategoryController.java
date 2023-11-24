@@ -2,13 +2,12 @@ package accessgoods.controllers;
 
 import accessgoods.model.Category;
 import accessgoods.model.dto.CategoryDto;
-import accessgoods.model.dto.PostCategoryDto;
+import accessgoods.model.dto.CategoryPostDto;
 import accessgoods.model.mapper.CategoryMapper;
 import accessgoods.service.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,9 +39,9 @@ public class CategoryController {
 
     @PostMapping("/add")
     @Transactional
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody PostCategoryDto postCategoryDto) {
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryPostDto categoryPostDto) {
         try {
-            Category category = categoryService.create(categoryMapper.postDtoToEntity(postCategoryDto));
+            Category category = categoryService.create(categoryMapper.postDtoToEntity(categoryPostDto));
             return ok(categoryMapper.entityToDto(category));
         } catch (Exception e) {
             throw new EntityNotFoundException(e.getMessage());

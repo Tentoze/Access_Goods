@@ -1,0 +1,43 @@
+package accessgoods.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Rent {
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "rent_id", nullable = false)
+    @Id
+    private Long id;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+    @ManyToOne
+    @JoinColumn(name = "lending_account_id")
+    private Account lendingAccount;
+
+    @ManyToOne
+    @JoinColumn(name = "borrowing_account_id")
+    private Account borrowingAccount;
+
+    @Column
+    private float totalCost;
+    @Column
+    private LocalDate rentTime;
+    @Column
+    private LocalDate returnTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private RentStatus rentStatus;
+}

@@ -52,6 +52,13 @@ public class Account {
 
     @Column
     private String password;
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> item;
+    @OneToMany(mappedBy = "lendingAccount")
+    private List<Rent> lentItems;
+
+    @OneToMany(mappedBy = "borrowingAccount")
+    private List<Rent> borrowedItems;
 
 
     public Account(String firstName, String lastName, String email, String phoneNumber, String password) {

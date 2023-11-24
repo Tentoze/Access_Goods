@@ -6,22 +6,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
+@Table(name = "item_image")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category {
-
+public class Image {
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "category_id", nullable = false)
+    @Column(name = "image_id", nullable = false)
     @Id
     private Long id;
     @Column
-    private String name;
-    @Column
-    private String description;
+    private String image;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
 
 }

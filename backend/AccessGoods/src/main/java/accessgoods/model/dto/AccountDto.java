@@ -26,6 +26,4 @@ public class AccountDto {
 
     private Role role = Role.CLIENT;
 
-    private String password;
-
 }
