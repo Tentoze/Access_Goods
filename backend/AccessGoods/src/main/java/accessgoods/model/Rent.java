@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Rent {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "item_gen")
+    @SequenceGenerator(name="item_gen", sequenceName="item_seq", allocationSize = 1)
     @Column(name = "rent_id", nullable = false)
     @Id
     private Long id;

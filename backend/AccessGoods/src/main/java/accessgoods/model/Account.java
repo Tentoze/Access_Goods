@@ -22,7 +22,8 @@ import static jakarta.persistence.CascadeType.*;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "account_gen")
+    @SequenceGenerator(name = "account_gen", sequenceName = "account_seq", allocationSize = 1)
     @Column(name = "account_id", nullable = false)
     private Long id;
 
@@ -47,7 +48,8 @@ public class Account {
     @Column
     private boolean isEnabled = true;
 
-    @Column
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private Role role = Role.CLIENT;
 
     @Column

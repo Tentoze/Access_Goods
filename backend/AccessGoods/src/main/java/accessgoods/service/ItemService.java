@@ -17,8 +17,5 @@ public class ItemService extends CrudService<Long, Item> {
         this.itemRepository = itemRepository;
     }
 
-    public void xd() {
-
-    }
 }
 

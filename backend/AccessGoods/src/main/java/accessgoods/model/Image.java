@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Image {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "category_gen")
+    @SequenceGenerator(name="category_gen", sequenceName="category_seq", allocationSize = 1)
     @Column(name = "image_id", nullable = false)
     @Id
     private Long id;

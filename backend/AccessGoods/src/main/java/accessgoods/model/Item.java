@@ -17,7 +17,8 @@ import static jakarta.persistence.CascadeType.REMOVE;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "item_gen")
+    @SequenceGenerator(name="item_gen", sequenceName="item_seq", allocationSize = 1)
     @Column(name = "item_id", nullable = false)
     @Id
     private Long id;
@@ -37,5 +38,10 @@ public class Item {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rent> rents;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
 
 }
