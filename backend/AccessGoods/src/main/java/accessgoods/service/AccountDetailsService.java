@@ -5,10 +5,13 @@ import accessgoods.model.AccountDetails;
 import accessgoods.model.Role;
 import accessgoods.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,5 +47,13 @@ public class AccountDetailsService implements UserDetailsService {
         }
 
         return new AccountDetails(account, grantedAuthorities);
+    }
+
+    public static String getCurrentUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
+            return ((Jwt) authentication.getPrincipal()).getClaim("sub");
+        }
+        return null;
     }
 }

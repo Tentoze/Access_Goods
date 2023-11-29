@@ -29,7 +29,7 @@ public interface ItemMapper extends MapperBase<Item, ItemDto, ItemPostDto> {
     default ItemDto entityToDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
-                .images(item.getImages().stream().map(image -> ImageDto.builder().image(image.getImage()).id(image.getId()).build()).collect(Collectors.toList()))
+                .images(item.getImages() == null ? null : item.getImages().stream().map(image -> ImageDto.builder().image(image.getImage()).id(image.getId()).build()).collect(Collectors.toList()))
                 .description(item.getDescription())
                 .name(item.getDescription())
                 .isActive(item.isActive())

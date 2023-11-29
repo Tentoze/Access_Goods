@@ -100,14 +100,13 @@ VALUES (1, 'laptop_image.jpg', 1),
 INSERT INTO rent (rent_id, lending_account_id, borrowing_account_id, item_id, total_cost, rent_time, return_time,
                   rent_status)
 VALUES (1, 1, 2, 1, 50.00, CURRENT_TIMESTAMP, NULL, 'IN_RENT'),
-       (2, 2, 1, 2, 10.00, CURRENT_TIMESTAMP, NULL, 'START'),
-       (3, 3, 1, 3, 20.00, CURRENT_TIMESTAMP, NULL, 'START');
+       (2, 2, 1, 2, 10.00, CURRENT_TIMESTAMP, NULL, 'TO_ACCEPT'),
+       (3, 3, 1, 3, 20.00, CURRENT_TIMESTAMP, NULL, 'TO_ACCEPT');
 
 INSERT INTO opinion (item_id, description, feedback_target, rating, giver_account_id, receiver_account_id)
-VALUES
-    (1, 'Great laptop, amazing performance!', 'LENDER', 5, 2, 1),
-    (2, 'Nice quality T-shirt.', 'BORROWER', 4, 1, 2),
-    (3, 'Excellent book, very informative.', 'LENDER', 5, 3, 1);
+VALUES (1, 'Great laptop, amazing performance!', 'LENDER', 5, 2, 1),
+       (2, 'Nice quality T-shirt.', 'BORROWER', 4, 1, 2),
+       (3, 'Excellent book, very informative.', 'LENDER', 5, 3, 1);
 
 -- auto-generated definition
 create sequence account_seq

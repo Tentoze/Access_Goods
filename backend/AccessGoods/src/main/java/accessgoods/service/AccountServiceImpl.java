@@ -112,8 +112,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void changePass(String username, String hashedPass) {
-        Account client = accountRepository.findByEmail(username)
+    public void changePass(String email, String hashedPass) {
+        Account client = accountRepository.findByEmail(email)
                 .orElseThrow(IllegalStateException::new);
         client.setPassword(hashedPass);
         client.setModifiedAt(LocalDateTime.now());
@@ -121,8 +121,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account getAccount(String username) {
-        return accountRepository.findByEmail(username)
+    public Account getAccount(String email) {
+        return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("Client does not exist"));
     }
 
@@ -137,8 +137,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void archive(String username) {
-        Account client = accountRepository.findByEmail(username)
+    public void archive(String email) {
+        Account client = accountRepository.findByEmail(email)
                 .orElseThrow(IllegalStateException::new);
         client.setEnabled(false);
         client.setModifiedAt(LocalDateTime.now());
@@ -146,8 +146,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void active(String username) {
-        Account client = accountRepository.findByEmail(username)
+    public void active(String email) {
+        Account client = accountRepository.findByEmail(email)
                 .orElseThrow(IllegalStateException::new);
         client.setEnabled(true);
         client.setModifiedAt(LocalDateTime.now());
