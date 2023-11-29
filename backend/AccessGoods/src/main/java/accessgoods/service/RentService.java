@@ -48,13 +48,11 @@ public class RentService extends CrudService<Long, Rent> {
                 // Nie dodajemy nowych statusów
                 break;
         }
-
         return availableStatuses;
     }
 
     public Rent createRent(Rent rent) {
         Item item = itemService.getById(rent.getItem().getId());
-        String email = AccountDetailsService.getCurrentUserEmail();
         if (isCurrentUserIsLender(rent)) {
             throw new IllegalStateException("You cannot rent your item");
         }

@@ -37,6 +37,8 @@ public class Rent {
     private LocalDate rentTime;
     @Column
     private LocalDate returnTime;
+    @ManyToOne
+    private Opinion opinion;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)

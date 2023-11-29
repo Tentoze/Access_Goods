@@ -64,8 +64,10 @@ create table opinion
     rating              integer,
     giver_account_id    bigint,
     receiver_account_id bigint,
+    rent_id             bigint,
     FOREIGN KEY (giver_account_id) REFERENCES account (account_id) ON DELETE CASCADE,
     FOREIGN KEY (receiver_account_id) REFERENCES account (account_id) ON DELETE CASCADE
+        FOREIGN KEY (rent_id) REFERENCES rent (rent_id) ON DELETE CASCADE
 );
 
 -- Dodanie identyfikatorów do tabeli 'category'

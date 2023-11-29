@@ -18,7 +18,6 @@ public class RentPostDto {
     private Long itemId;
     private Long lendingAccountId;
     private Long borrowingAccountId;
-    private float totalCost;
     private LocalDate returnTime;
     private LocalDate rentTime;
 }

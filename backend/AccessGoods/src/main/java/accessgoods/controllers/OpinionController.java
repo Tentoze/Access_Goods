@@ -31,9 +31,9 @@ public class OpinionController {
         return ok(opinions.stream().map(opinionMapper::entityToDto).toList());
     }
 
-    @GetMapping("/{ItemId}")
-    public ResponseEntity<OpinionDto> getOpinion(@PathVariable Long ItemId) {
-        Opinion opinion = opinionService.getById(ItemId);
+    @GetMapping("/{itemId}")
+    public ResponseEntity<OpinionDto> getOpinion(@PathVariable Long itemId) {
+        Opinion opinion = opinionService.getById(itemId);
         return ok(opinionMapper.entityToDto(opinion));
     }
 
@@ -41,7 +41,7 @@ public class OpinionController {
     @Transactional
     public ResponseEntity<OpinionDto> addOpinion(@RequestBody OpinionPostDto OpinionPostDto) {
         try {
-            Opinion opinion = opinionService.create(opinionMapper.postDtoToEntity(OpinionPostDto));
+            Opinion opinion = opinionService.createOpinion(opinionMapper.postDtoToEntity(OpinionPostDto));
             return ok(opinionMapper.entityToDto(opinion));
         } catch (Exception e) {
             throw new EntityNotFoundException(e.getMessage());
