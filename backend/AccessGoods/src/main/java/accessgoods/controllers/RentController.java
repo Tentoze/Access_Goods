@@ -43,9 +43,15 @@ public class RentController {
         return ok(rents.stream().map(rentMapper::entityToDto).toList());
     }
 
-    @GetMapping("/{ItemId}")
-    public ResponseEntity<RentDto> getRent(@PathVariable Long ItemId) {
-        Rent rent = rentService.getById(ItemId);
+    @GetMapping("/getById/{rentId}")
+    public ResponseEntity<RentDto> getRent(@PathVariable Long rentId) {
+        Rent rent = rentService.getById(rentId);
+        return ok(rentMapper.entityToDto(rent));
+    }
+
+    @GetMapping("/getByAccountId/{ItemId}")
+    public ResponseEntity<RentDto> getRentByAccountId(@PathVariable Long accountId) {
+        Rent rent = rentService.getById(accountId);
         return ok(rentMapper.entityToDto(rent));
     }
 

@@ -51,6 +51,7 @@ public class RentService extends CrudService<Long, Rent> {
         return availableStatuses;
     }
 
+
     public Rent createRent(Rent rent) {
         Item item = itemService.getById(rent.getItem().getId());
         if (isCurrentUserIsLender(rent)) {
