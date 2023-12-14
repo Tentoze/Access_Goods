@@ -61,7 +61,11 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return accountRepository.save(Account.builder()
-                        .email(registrationForm.getEmail())
+                .email(registrationForm.getEmail())
+                .firstName(registrationForm.getFirstName())
+                .lastName(registrationForm.getLastName())
+                .phoneNumber(registrationForm.getPhoneNumber())
+                .photo(registrationForm.getPhoto())
                         .role(Role.CLIENT)
                         .createdAt(LocalDateTime.now())
                         .isEnabled(true)

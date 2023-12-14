@@ -38,6 +38,8 @@ public class Account {
 
     @Column
     private String phoneNumber;
+    @Column(columnDefinition = "text")
+    private String photo;
 
     @CreatedDate
     private LocalDateTime createdAt;

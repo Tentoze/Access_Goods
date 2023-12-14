@@ -16,7 +16,8 @@ CREATE TABLE account
     modified_at  TIMESTAMP,
     is_enabled   BOOLEAN,
     role         VARCHAR(20),
-    password     VARCHAR(255)
+    password     VARCHAR(255),
+    photo        TEXT
 );
 
 CREATE TABLE item
@@ -35,7 +36,7 @@ CREATE TABLE item
 CREATE TABLE item_image
 (
     image_id BIGINT PRIMARY KEY,
-    image    VARCHAR(255),
+    image    TEXT,
     item_id  BIGINT,
     FOREIGN KEY (item_id) REFERENCES item (item_id) ON DELETE CASCADE
 );
@@ -57,7 +58,7 @@ CREATE TABLE rent
 );
 create table opinion
 (
-    item_id             bigint not null
+    opinion_id          bigint not null
         primary key,
     description         varchar(255),
     feedback_target     varchar(20),
@@ -65,9 +66,11 @@ create table opinion
     giver_account_id    bigint,
     receiver_account_id bigint,
     rent_id             bigint,
+    item_id             bigint,
     FOREIGN KEY (giver_account_id) REFERENCES account (account_id) ON DELETE CASCADE,
-    FOREIGN KEY (receiver_account_id) REFERENCES account (account_id) ON DELETE CASCADE
-        FOREIGN KEY (rent_id) REFERENCES rent (rent_id) ON DELETE CASCADE
+    FOREIGN KEY (receiver_account_id) REFERENCES account (account_id) ON DELETE CASCADE,
+    FOREIGN KEY (rent_id) REFERENCES rent (rent_id) ON DELETE CASCADE,
+    FOREIGN KEY (item_id) REFERENCES item (item_id) ON DELETE CASCADE
 );
 
 -- Dodanie identyfikatorów do tabeli 'category'

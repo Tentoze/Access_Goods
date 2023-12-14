@@ -21,4 +21,9 @@ public class ItemDto {
     private Float cost;
     private List<ImageDto> images;
     private boolean isActive;
+    private Long accountId;
+    private String accountFirstName;
+    private String accountLastName;
+    private String accountImage;
+
 }

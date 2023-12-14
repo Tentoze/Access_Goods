@@ -18,7 +18,7 @@ public class Image {
     @Column(name = "image_id", nullable = false)
     @Id
     private Long id;
-    @Column
+    @Column(columnDefinition = "text")
     private String image;
     @ManyToOne
     @JoinColumn(name = "item_id")

@@ -31,8 +31,12 @@ public interface ItemMapper extends MapperBase<Item, ItemDto, ItemPostDto> {
                 .id(item.getId())
                 .images(item.getImages() == null ? null : item.getImages().stream().map(image -> ImageDto.builder().image(image.getImage()).id(image.getId()).build()).collect(Collectors.toList()))
                 .description(item.getDescription())
-                .name(item.getDescription())
+                .name(item.getName())
                 .isActive(item.isActive())
+                .accountId(item.getAccount().getId())
+                .accountFirstName(item.getAccount().getFirstName())
+                .accountLastName(item.getAccount().getLastName())
+                .accountImage(item.getAccount().getPhoto())
                 .cost(item.getCost()).build();
     }
 }

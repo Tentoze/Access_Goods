@@ -19,9 +19,8 @@ public class AccountDto {
     private String firstName;
 
     private String lastName;
-
     private String phoneNumber;
-
+    private String photo;
     private boolean isEnabled = true;
 
     private Role role = Role.CLIENT;

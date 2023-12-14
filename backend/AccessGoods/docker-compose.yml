@@ -10,7 +10,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - /path/to/store/data2:/var/lib/postgresql/data
+      - /path/to/store/data3:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 
