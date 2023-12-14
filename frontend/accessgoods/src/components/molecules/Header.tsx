@@ -25,6 +25,10 @@ const Header = () => {
         setJwtToken(null)
         handleClose();
     };
+    const rentNewItem = () => {
+        handleClose();
+        navigate('/rent-new-item');
+    };
     const goToCurrentRents = () => {
         localStorage.removeItem('jwtToken');
         setJwtToken(null)
@@ -79,8 +83,9 @@ const Header = () => {
                             }}
                         >
                             <MenuItem onClick={logoutUser}>Wyloguj</MenuItem>
+                            <MenuItem onClick={rentNewItem}>Wystaw przedmiot</MenuItem>
                             <MenuItem onClick={handleClose}>Ustawienia</MenuItem>
-                            <MenuItem onClick={handleClose}>Moje Wypożyczenia</MenuItem>
+                            <MenuItem onClick={handleClose}>Moje Przedmioty</MenuItem>
                         </Menu>
                     </div>
                 )}

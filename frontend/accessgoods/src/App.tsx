@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import Search from "./pages/Search";
 import Login from "./components/structures/Login";
 import Item from "./pages/Item";
+import Registration from "./pages/Registration";
+import RentNewItem from "./pages/RentNewItem";
 
 
 const App = () => {
@@ -14,6 +16,8 @@ const App = () => {
           <Route path="/" Component={Home} />
           <Route path="/search" Component={Search} />
           <Route path="/item/:itemId" Component={Item} />
+          <Route path="/register" Component={Registration} />
+          <Route path="/rent-new-item" Component={RentNewItem} />
         </Routes>
       </Router>
   );

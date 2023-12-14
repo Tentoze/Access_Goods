@@ -76,7 +76,7 @@ const Login: React.FC<LoginProps> = ({open, onClose}) => {
                 </form>
                 <Typography variant="body2" mt={2}>
                     Nie masz jeszcze konta?{' '}
-                    <a href="/registration" style={{color: 'blue', textDecoration: 'underline'}}>
+                    <a href="/register" style={{color: 'blue', textDecoration: 'underline'}}>
                         Zarejestruj się
                     </a>
                 </Typography>
