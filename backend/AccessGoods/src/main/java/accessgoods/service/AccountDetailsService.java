@@ -56,4 +56,14 @@ public class AccountDetailsService implements UserDetailsService {
         }
         return null;
     }
+
+    public Account getCurrentUser() {
+        String email = getCurrentUserEmail();
+        if (email != null) {
+            return accountRepository.findByEmail(getCurrentUserEmail()).orElse(null);
+        }
+        return null;
+    }
+
+
 }

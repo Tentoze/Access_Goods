@@ -18,9 +18,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RentDto {
     private Long id;
-    private ItemDto item;
-    private AccountDto lendingAccount;
-    private AccountDto borrowingAccount;
+    private Long itemId;
+    private Long lendingAccountId;
+    private Long borrowingAccountId;
     private float totalCost;
     private LocalDate returnTime;
     private LocalDate rentTime;

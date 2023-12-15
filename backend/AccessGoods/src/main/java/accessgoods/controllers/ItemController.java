@@ -41,8 +41,10 @@ public class ItemController {
     @Transactional
     public ResponseEntity<ItemDto> addItem(@RequestBody ItemPostDto itemPostDto) {
         try {
-            Item Item = itemService.create(itemMapper.postDtoToEntity(itemPostDto));
-            return ok(itemMapper.entityToDto(Item));
+            Item item = itemMapper.postDtoToEntity(itemPostDto);
+
+            itemService.create(item);
+            return ok(itemMapper.entityToDto(item));
         } catch (Exception e) {
             throw new EntityNotFoundException(e.getMessage());
         }

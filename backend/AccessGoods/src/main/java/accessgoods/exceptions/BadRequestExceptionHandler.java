@@ -1,3 +1,4 @@
+/*
 package accessgoods.exceptions;
 
 import org.springframework.http.HttpStatus;
@@ -32,3 +33,4 @@ public class BadRequestExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }
+*/

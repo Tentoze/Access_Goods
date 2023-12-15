@@ -1,5 +1,6 @@
 package accessgoods.model.mapper;
 
+import accessgoods.model.Account;
 import accessgoods.model.Image;
 import accessgoods.model.Item;
 import accessgoods.model.dto.ImageDto;
@@ -17,6 +18,7 @@ public interface ItemMapper extends MapperBase<Item, ItemDto, ItemPostDto> {
     @Override
     default Item postDtoToEntity(ItemPostDto itemPostDto) {
         Item item = Item.builder().cost(itemPostDto.getCost())
+                .account(Account.builder().id(itemPostDto.getAccountID()).build())
                 .description(itemPostDto.getDescription())
                 .name(itemPostDto.getName())
                 .isActive(itemPostDto.isActive())
