@@ -1,5 +1,6 @@
 import Api from "./api";
 import ItemDto from "../atoms/ItemDto";
+import CategoryDto from "../atoms/CategoryDto";
 
 export const login = async (email: string, password: string) => {
     try {

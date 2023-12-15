@@ -1,15 +1,23 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Autocomplete, Button, Container, TextField} from '@mui/material';
 import { useNavigate } from 'react-router';
+import CategoryDto from "../atoms/CategoryDto";
+import {getCategories} from "../endpoints/Categories";
 
 const ItemSearchBar = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState<CategoryDto | null>();
+    const [categories, setCategories] = useState<CategoryDto[]>([]);
 
-    const categories = [
-        {label: 'Super kategoria', id: 1},
-        {label: 'Fajna kategoria', id: 2}, //docelowo ma byc pobrane
-    ];
+    useEffect(() => {
+        // Pobranie listy kategorii z backendu
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        const categories = await getCategories()
+        setCategories(categories)
+    };
 
     const navigate = useNavigate();
     const handleSearch = () => {
@@ -30,10 +38,11 @@ const ItemSearchBar = () => {
                 disablePortal
                 id="combo-box-demo"
                 options={categories}
+                getOptionLabel={(option) => option.name}
                 sx={{width: 300}}
-                onChange={(e, value) => value !== null && setCategory(value.label)} // Sprawdzenie, czy wartość nie jest null
+                onChange={(e, value) => value !== null && setCategory(value)} // Sprawdzenie, czy wartość nie jest null
                 renderInput={(params) =>
-                    <TextField {...params} label="Kategoria" />}
+                    <TextField {...params} label="Kategoria"/>}
             />
             <Button variant="contained" onClick={handleSearch} size="medium">
                 Szukaj
