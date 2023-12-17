@@ -21,5 +21,5 @@ public class ItemPostDto {
     private Float cost;
     private List<ImagePostDto> images;
     private boolean isActive;
-    private Long accountID;
+    private Long categoryId;
 }
