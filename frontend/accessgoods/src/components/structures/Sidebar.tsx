@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     FormControl,
     InputLabel,
@@ -15,6 +15,7 @@ import {
 interface SidebarProps {
     handleFilters: (filters: any) => void; // Określ typ właściwości handleFilters
 }
+
 const marginBottom = {
     marginBottom: '16px',
 };
@@ -23,22 +24,22 @@ const positionFlex = {
 };
 
 
-const Sidebar: React.FC<SidebarProps> = ({ handleFilters }) => {
-    const [sortOption, setSortOption] = useState('');
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
-    const [verifiedUser, setVerifiedUser] = useState(false);
-    const [hasPhoto, setHasPhoto] = useState(false);
-    const [deliveryOption, setDeliveryOption] = useState('');
+const Sidebar: React.FC<SidebarProps> = ({handleFilters}) => {
+    const [sortOption, setSortOption] = useState('NONE');
+    const [priceFrom, setPriceFrom] = useState<Number | null>(null);
+    const [priceTo, setPriceTo] = useState<Number | null>(null);
+    const [verifiedUser, setVerifiedUser] = useState<boolean | undefined>();
+    const [userHasPhoto, setUserHasPhoto] = useState<boolean | undefined>();
+    const [deliveryType, setDeliveryType] = useState('');
 
     const handleApplyFilters = () => {
         const filters = {
             sortOption,
-            minPrice,
-            maxPrice,
+            priceFrom,
+            priceTo,
             verifiedUser,
-            hasPhoto,
-            deliveryOption,
+            userHasPhoto,
+            deliveryType,
         };
         handleFilters(filters);
     };
@@ -54,9 +55,9 @@ const Sidebar: React.FC<SidebarProps> = ({ handleFilters }) => {
                     label="Sortowanie"
                     onChange={(e) => setSortOption(e.target.value)}
                 >
-                    <MenuItem value="lowestPrice">Najniższa cena</MenuItem>
-                    <MenuItem value="highestPrice">Najwyższa cena</MenuItem>
-                    <MenuItem value="highestRating">Najwyższa ocena</MenuItem>
+                    <MenuItem value="PRICE_ASC">Najniższa cena</MenuItem>
+                    <MenuItem value="PRICE_DESC">Najwyższa cena</MenuItem>
+                    <MenuItem value="OPINION_DESC">Najwyższa ocena</MenuItem>
                 </Select>
             </FormControl>
             <br/>
@@ -65,26 +66,26 @@ const Sidebar: React.FC<SidebarProps> = ({ handleFilters }) => {
             <TextField
                 label="Cena od"
                 type="number"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
+                value={priceFrom}
+                onChange={(e) => setPriceFrom(e.target.value === null ? null : Number(e.target.value) === 0 ? null : Number(e.target.value))}
             />
             <br/>
             <br/>
             <TextField
                 label="Cena do"
                 type="number"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
+                value={priceTo}
+                onChange={(e) => setPriceTo(e.target.value === null ? null : Number(e.target.value) === 0 ? null : Number(e.target.value))}
             />
             <br/>
             <br/>
             <FormGroup>
                 <FormControlLabel
-                    control={<Checkbox checked={verifiedUser} onChange={(e) => setVerifiedUser(e.target.checked)} />}
+                    control={<Checkbox checked={verifiedUser} onChange={(e) => setVerifiedUser(e.target.checked)}/>}
                     label="Użytkownik zweryfikowany"
                 />
                 <FormControlLabel
-                    control={<Checkbox checked={hasPhoto} onChange={(e) => setHasPhoto(e.target.checked)} />}
+                    control={<Checkbox checked={userHasPhoto} onChange={(e) => setUserHasPhoto(e.target.checked)}/>}
                     label="Użytkownik posiadający zdjęcie"
                 />
             </FormGroup>
@@ -93,9 +94,9 @@ const Sidebar: React.FC<SidebarProps> = ({ handleFilters }) => {
                 <Select
                     labelId="delivery-label"
                     id="delivery-option"
-                    value={deliveryOption}
+                    value={deliveryType}
                     label="Dostawa/Odbiór osobisty"
-                    onChange={(e) => setDeliveryOption(e.target.value)}
+                    onChange={(e) => setDeliveryType(e.target.value)}
                 >
                     <MenuItem value="delivery">Z dostawą</MenuItem>
                     <MenuItem value="pickup">Odbiór osobisty</MenuItem>

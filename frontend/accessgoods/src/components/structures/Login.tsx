@@ -15,7 +15,8 @@ const Login: React.FC<LoginProps> = ({open, onClose}) => {
     const handleLogin = async () => {
         try {
             const response = await Api.post('/login', {email, password});
-            localStorage.setItem("jwtToken", response.data.authorizationToken);
+            localStorage.setItem("jwtToken", response.data.autorizationToken);
+            localStorage.setItem("accountId",response.data.id);
             onClose(); // Zamknij okno logowania po sukcesie
         } catch (error: any) {
             if (error.response.status === 401) {

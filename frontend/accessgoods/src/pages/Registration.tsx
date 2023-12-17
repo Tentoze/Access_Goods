@@ -13,7 +13,8 @@ const homeContentStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: '100px', // Odsunięcie od góry
+    paddingTop: '30px',
+    paddingBottom: '60px',
 };
 const Registration = () => {
     const [email, setEmail] = useState('');
@@ -58,7 +59,7 @@ const Registration = () => {
         } else {
 
         }
-
+        return;
         // Tu możesz użyć fetch lub biblioteki do wywołania backendu
         // fetch('URL_DO_BACKENDU', {
         //   method: 'POST',

@@ -29,8 +29,8 @@ export function ImageSlider({images}: ImageSliderProps) {
         })
     }
     const maxPhotoSize = {
-        width: '50rem',
-        height: '50rem',
+        width: '40rem',
+        height: '40rem',
         margin: 'auto',
     };
 

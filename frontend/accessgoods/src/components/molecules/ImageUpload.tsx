@@ -1,6 +1,7 @@
 import React, { useRef, ChangeEvent, useState } from 'react';
 import { Box } from '@mui/material';
 import { Add } from '@mui/icons-material';
+const MAX_IMAGE_SIZE = 250 * 1024; // 250KB
 
 const ImageUpload: React.FC<{onImageSrc: (src: string) => void}> = ({ onImageSrc }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -9,12 +10,64 @@ const ImageUpload: React.FC<{onImageSrc: (src: string) => void}> = ({ onImageSrc
     const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImageSrc(reader.result as string);
-                onImageSrc(reader.result as string); // przekazanie imageSrc do komponentu nadrzędnego
-            };
-            reader.readAsDataURL(file);
+            if (file.size > MAX_IMAGE_SIZE) {
+                // Obrazek jest większy niż 250KB, więc trzeba go przeskalować
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const image = new Image();
+                    image.src = event.target!.result as string;
+
+                    image.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d')!;
+                        const MAX_WIDTH = 800;
+                        const MAX_HEIGHT = 600;
+
+                        let width = image.width;
+                        let height = image.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        ctx.drawImage(image, 0, 0, width, height);
+
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                const scaledFile = new File([blob], file.name, {
+                                    type: 'image/jpeg', // Możesz dostosować typ obrazka
+                                });
+
+                                const scaledReader = new FileReader();
+                                scaledReader.onloadend = () => {
+                                    setImageSrc(scaledReader.result as string);
+                                    onImageSrc(scaledReader.result as string);
+                                };
+                                scaledReader.readAsDataURL(scaledFile);
+                            }
+                        }, 'image/jpeg', 0.7); // Zmień kompresję, jeśli to konieczne
+                    };
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setImageSrc(reader.result as string);
+                    onImageSrc(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+            }
         }
     };
 

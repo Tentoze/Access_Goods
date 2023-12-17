@@ -4,6 +4,7 @@ type ImageObject = {
 }
 class ItemDto {
     images: ImageObject[];
+    categoryId: number;
     name: string;
     pricePerDay: number;
     rating: number;
@@ -24,8 +25,10 @@ class ItemDto {
         accountImage: string,
         id: number,
         accountId: number,
-        description: string
+        description: string,
+        categoryId: number
     ) {
+        this.categoryId = categoryId;
         this.images = images;
         this.name = name;
         this.pricePerDay = pricePerDay;

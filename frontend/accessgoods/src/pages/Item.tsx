@@ -9,12 +9,14 @@ import ItemDto from "../components/atoms/ItemDto";
 import {ImageSlider} from "../components/molecules/ImageSlider";
 
 
-
 const homeContentStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: '100px', // Odsunięcie od góry
+    paddingTop: '40px',
+    paddingBottom: '40px',
+    marginBottom: '50px',
+    minHeight: '100vh',// Odsunięcie od góry
 };
 const Item = () => {
     const [itemDto, setItemDto] = useState<ItemDto | null>(null);
@@ -53,17 +55,29 @@ const Item = () => {
                                 )}
                             </Grid>
                             {/* Opis */}
-                            <Grid item xs={12}>
-                                {itemDto && (
-                                    <Typography variant="body1">
-                                        {itemDto.description}
-                                    </Typography>
-                                )}
-                            </Grid>
-                            {/* Opinie */}
-                            <Grid item xs={12}>
-                                {/* Tutaj umieść opinie */}
-                            </Grid>
+                            <Box>
+                                <Grid item xs={12}>
+                                    {itemDto && (
+                                        <Box sx={{
+                                            marginLeft: '10vh',
+                                            padding:'5px',
+                                            paddingRight:'500px',
+                                            border: '2px solid rgb(128,128,128,0.3)',
+                                        }}>
+                                            <Typography variant="h5" >
+                                                Opis:
+                                            </Typography>
+                                            <Typography >
+                                                {itemDto.description}
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Grid>
+                                {/* Opinie */}
+                                <Grid item xs={12}>
+                                    {/* Tutaj umieść opinie */}
+                                </Grid>
+                            </Box>
                         </Grid>
                     </Grid>
                     {/* Prawa strona */}
@@ -73,7 +87,7 @@ const Item = () => {
                             {/* Lokalizacja */}
                             <Grid item xs={12}>
                                 {itemDto && (
-                                    <Typography variant="body2">
+                                    <Typography variant="h6">
                                         Lokalizacja:
                                     </Typography>
                                 )}
@@ -81,15 +95,17 @@ const Item = () => {
                             {/* Sprzedający */}
                             <Grid item xs={12}>
                                 {itemDto && (
-                                    <Box>
+                                    <Box sx={{height: '100px', rowGap: '8px'}}>
                                         <img src={itemDto.accountImage} alt={`${itemDto.accountFirstName}`} style={{
-                                            width: '30px',
-                                            height: '30px',
-                                            borderRadius: '50%',
+                                            float: "left",
+                                            width: '100px',
+                                            height: '100px',
+                                            borderRadius: '10%',
                                             marginRight: '5px'
-                                        }}/>
-                                        <Typography variant="body2">
-                                            Sprzedający: {itemDto.accountFirstName + ' ' + itemDto.accountLastName}
+                                        }}>
+                                        </img>
+                                        <Typography variant="h6" sx={{alignText: 'center'}}>
+                                            Sprzedający: <br/>{itemDto.accountFirstName + ' ' + itemDto.accountLastName}
                                         </Typography>
                                     </Box>
                                 )}

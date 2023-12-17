@@ -3,26 +3,44 @@ import {Autocomplete, Button, Container, TextField} from '@mui/material';
 import { useNavigate } from 'react-router';
 import CategoryDto from "../atoms/CategoryDto";
 import {getCategories} from "../endpoints/Categories";
+import {useLocation} from "react-router-dom";
 
 const ItemSearchBar = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [category, setCategory] = useState<CategoryDto | null>();
+    const location = useLocation();
+    const params = new URLSearchParams(location.search)
+    const categoryIdFromParams = Number(params.get("categoryId"))
+    const searchTermFromParams = params.get("searchTerm")
+    const [searchTerm, setSearchTerm] = useState(searchTermFromParams === null ? '' : searchTermFromParams);
+    const [category, setCategory] = useState<CategoryDto>();
     const [categories, setCategories] = useState<CategoryDto[]>([]);
-
     useEffect(() => {
         // Pobranie listy kategorii z backendu
         fetchCategories();
     }, []);
 
     const fetchCategories = async () => {
+        try {
         const categories = await getCategories()
         setCategories(categories)
+        const foundCategory = categories.find(category => category.categoryId === categoryIdFromParams);
+        if (foundCategory) {
+            setCategory(foundCategory);
+        }
+        } catch (e) {
+            throw new Error("Exception during fetch categories")
+        }
     };
 
     const navigate = useNavigate();
     const handleSearch = () => {
-        console.log(`Szukanie przedmiotów: ${searchTerm}, Kategoria: ${category}`);
-        navigate('/search'); // Przekierowanie do ścieżki /search
+        let addressString = '/search/?'
+        if(category) {
+            addressString = addressString + `categoryId=${category.categoryId}&`
+        }
+        if(searchTerm != null) {
+            addressString = addressString + `searchTerm=${searchTerm}&`
+        }
+        navigate(`${addressString}`); // Przekierowanie do ścieżki /search
     };
 
     return (
@@ -35,8 +53,8 @@ const ItemSearchBar = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
             <Autocomplete
-                disablePortal
                 id="combo-box-demo"
+                value={category}
                 options={categories}
                 getOptionLabel={(option) => option.name}
                 sx={{width: 300}}

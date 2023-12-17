@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {AppBar, Toolbar, Typography, Button, Theme, makeStyles, Menu, MenuItem} from '@mui/material';
+import React, {useEffect, useState} from 'react';
+import {AppBar, Toolbar, Typography, Button, Theme, makeStyles, Menu, MenuItem, useScrollTrigger} from '@mui/material';
 import {Link} from 'react-router-dom';
 import Login from "../structures/Login";
 import {useNavigate} from "react-router";
@@ -9,6 +9,7 @@ const Header = () => {
     const [showPopUp, setShowPopUp] = useState(false);
     const [jwtToken, setJwtToken] = useState<String | null>(localStorage.getItem('jwtToken'));
     const [anchorEl, setAnchorEl] = useState(null);
+
     const handleLoginClick = () => {
         setShowPopUp(true);
     };
@@ -22,6 +23,7 @@ const Header = () => {
     };
     const logoutUser = () => {
         localStorage.removeItem('jwtToken');
+        localStorage.removeItem('accountId');
         setJwtToken(null)
         handleClose();
     };
@@ -30,8 +32,6 @@ const Header = () => {
         navigate('/rent-new-item');
     };
     const goToCurrentRents = () => {
-        localStorage.removeItem('jwtToken');
-        setJwtToken(null)
         handleClose();
     };
 
@@ -58,7 +58,7 @@ const Header = () => {
     };
     return (
 
-        <AppBar position="static">
+        <AppBar position="static" >
             <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h6" onClick={handleGoBack} style={{ cursor: 'pointer' }}>
                     AccessGoods

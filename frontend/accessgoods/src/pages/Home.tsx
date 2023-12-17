@@ -8,7 +8,6 @@ const homeContentStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: '100px', // Odsunięcie od góry
 };
 const Home = () => {
 

@@ -26,9 +26,10 @@ export const getItem = async (itemId: number) => {
             accountImage,
             id,
             accountId,
-            description
+            description,
+            categoryId
         } = itemData;
-        return new ItemDto(images, name, cost, rating, accountFirstName, accountLastName, accountImage, id, accountId, description);
+        return new ItemDto(images, name, cost, rating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId);
     } catch (error) {
         throw new Error('Not found');
     }
