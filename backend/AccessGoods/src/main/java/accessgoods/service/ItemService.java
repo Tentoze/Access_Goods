@@ -29,10 +29,10 @@ public class ItemService extends CrudService<Long, Item> {
         return super.create(item);
     }
 
-    public List<Item> showCurrentUserRents() {
+/*    public List<Item> showCurrentUserRents() {
         Account currentAccount = accountDetailsService.getCurrentUser();
 
-    }
+    }*/
 
     public List<Item> search(FilterSearchDto filterSearchDto) {
         return itemRepository.searchItems(filterSearchDto.getSearchTerm() == null ? null : filterSearchDto.getSearchTerm().toLowerCase(), filterSearchDto.getCategoryId(), filterSearchDto.getPriceFrom(), filterSearchDto.getPriceTo(), filterSearchDto.getUserHasPhoto(), filterSearchDto.getSortOption().name());

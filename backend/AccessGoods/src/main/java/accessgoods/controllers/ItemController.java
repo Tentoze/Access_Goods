@@ -44,11 +44,11 @@ public class ItemController {
         Item item = itemService.getById(ItemId);
         return ok(itemMapper.entityToDto(item));
     }
-    @GetMapping("/showMyRents")
+/*    @GetMapping("/showMyRents")
     public ResponseEntity<ItemDto> getItem() {
         Item item = itemService.getById();
         return ok(itemMapper.entityToDto(item));
-    }
+    }*/
 
     @PostMapping("/add")
     @Transactional
