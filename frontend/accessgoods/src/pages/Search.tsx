@@ -70,10 +70,11 @@ const Search = () => {
     const toggleFilters = () => {
         setShowFilters(!showFilters); // Funkcja do przełączania widoczności filtra
     };
+
     const handleFilters = async (data: Filters) => {
         if (params.get("searchTerm") !== null) {
             const paramSearchTerm = String(params.get("searchTerm"))
-            if(paramSearchTerm !== ""){
+            if (paramSearchTerm !== "") {
                 data.searchTerm = String(params.get("searchTerm"))
             }
         }
@@ -90,13 +91,37 @@ const Search = () => {
         } catch (error) {
             // Obsługa błędu z zapytaniem do API
             console.error('Error fetching data:', error);
-        }        return
+        }
+        return
+    };
+    const handleSearchBar = async (searchTerm: string, categoryid?: number) => {
+        try {
+            const data = filtersData;
+            if (searchTerm !== null) {
+                if (searchTerm === "") {
+                    data!.searchTerm = undefined;
+                }
+                data!.searchTerm = searchTerm
+            }
+            if (categoryid !== null) {
+                data!.categoryId = categoryid;
+            } else {
+                data!.categoryId = undefined;
+            }
+            setFiltersData(data);
+            console.log("Filters applied:", data);
+            const result = await searchItem(data); // Oczekiwanie na zwrotkę z endpointu
+            setItems(result); // Aktualizacja stanu items po otrzymaniu wyniku
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+        return
     };
     return (
         <div>
             <Header/>
             <div style={centeredContentStyle}>
-                <ItemSearchBar/>
+                <ItemSearchBar handleSearchBar={handleSearchBar}/>
             </div>
             <Grid container sx={{paddingBottom: '60px', marginBottom: '6px'}}>
                 {

@@ -72,3 +72,31 @@ export const searchItem = async (filters: Partial<Filters> | null) => {
         throw error;
     }
 };
+export const getMyItems = async () => {
+    try {
+        const response = await Api.get('/items/showMyItems',  {
+            headers: {Authorization: getAuthorizationHeader()}
+        });
+        const itemDataList = response.data;
+
+        const itemList: ItemDto[] = itemDataList.map((itemData: any) => {
+            const {
+                images,
+                name,
+                cost,
+                rating,
+                accountFirstName,
+                accountLastName,
+                accountImage,
+                id,
+                accountId,
+                description,
+                categoryId
+            } = itemData;
+            return new ItemDto(images, name, cost, rating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId);
+        });
+        return itemList;
+    } catch (error) {
+        throw error;
+    }
+};

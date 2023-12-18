@@ -57,3 +57,4 @@ export const register = async (
         throw new Error('Registration failed');
     }
 };
+

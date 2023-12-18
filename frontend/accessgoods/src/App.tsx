@@ -7,6 +7,7 @@ import Login from "./components/structures/Login";
 import Item from "./pages/Item";
 import Registration from "./pages/Registration";
 import RentNewItem from "./pages/RentNewItem";
+import MyItems from "./pages/MyItems";
 
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/item/:itemId" Component={Item} />
           <Route path="/register" Component={Registration} />
           <Route path="/rent-new-item" Component={RentNewItem} />
+          <Route path="/my-items" Component={MyItems} />
         </Routes>
       </Router>
   );

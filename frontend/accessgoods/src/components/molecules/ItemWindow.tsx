@@ -1,19 +1,18 @@
 import React from 'react';
 import {Box, Button, Card, CardContent, CardMedia, Typography} from '@mui/material';
 import {Link} from "react-router-dom";
+import {useNavigate} from "react-router";
 
 const cardStyle = {
     padding: '0px',
     borderRadius: '5px',
 };
 
-class ItemWindow extends React.Component<{ item: any }> {
+class ItemWindow extends React.Component<{ item: any, currentAccountId?: Number }> {
     render() {
         let {item} = this.props;
+        let currentAccountIdProp = this.props.currentAccountId;
         const {images, name, pricePerDay, rating, accountFirstName, accountImage, itemId} = item;
-        const handleItemClick = () => {
-            // Przenieś do strony przedmiotu po kliknięciu na przycisk
-        };
 
         return (
             <Card style={{border: '1px solid #ccc', padding: '5px'}}>
@@ -36,11 +35,26 @@ class ItemWindow extends React.Component<{ item: any }> {
                             {accountFirstName}
                         </Typography>
                     </Box>
-                    <Link to={`/item/${itemId}`}>
-                        <Button variant="contained" onClick={handleItemClick}>
-                            Zobacz więcej
-                        </Button>
-                    </Link>
+                    <Box sx={{alignItems: 'center'}}>
+                        <Link to={`/item/${itemId}`}>
+                            <Button variant="contained">
+                                Zobacz więcej
+                            </Button>
+                        </Link>
+                        {currentAccountIdProp &&
+                            <Link to={`/editItem/${itemId}`}>
+                                <Button sx={{
+                                    backgroundColor: 'red',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(207, 2, 2)', // Zmniejszenie przejrzystości podczas najechania
+                                    },
+                                }} variant="contained">
+                                    Edytuj przedmiot
+                                </Button>
+                            </Link>
+                        }
+
+                    </Box>
                 </CardContent>
             </Card>
         );

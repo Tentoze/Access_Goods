@@ -8,6 +8,7 @@ const homeContentStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    paddingTop: '30px'
 };
 const Home = () => {
 
