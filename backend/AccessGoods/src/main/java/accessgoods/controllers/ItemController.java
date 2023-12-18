@@ -9,13 +9,16 @@ import accessgoods.model.mapper.ItemMapper;
 import accessgoods.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.mapstruct.factory.Mappers;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
+import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -44,11 +47,16 @@ public class ItemController {
         Item item = itemService.getById(ItemId);
         return ok(itemMapper.entityToDto(item));
     }
-/*    @GetMapping("/showMyRents")
-    public ResponseEntity<ItemDto> getItem() {
-        Item item = itemService.getById();
-        return ok(itemMapper.entityToDto(item));
-    }*/
+
+    @GetMapping("/showMyItems")
+    public ResponseEntity<List<ItemDto>> getItem() {
+        try {
+            List<Item> items = itemService.showCurrentUserItems();
+            return ok(items.stream().map(itemMapper::entityToDto).toList());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(e.getMessage());
+        }
+    }
 
     @PostMapping("/add")
     @Transactional
