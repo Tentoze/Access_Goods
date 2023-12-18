@@ -42,7 +42,7 @@ class ItemWindow extends React.Component<{ item: any, currentAccountId?: Number 
                             </Button>
                         </Link>
                         {currentAccountIdProp &&
-                            <Link to={`/editItem/${itemId}`}>
+                            <Link to={`/edit-item/${itemId}`}>
                                 <Button sx={{
                                     backgroundColor: 'red',
                                     '&:hover': {

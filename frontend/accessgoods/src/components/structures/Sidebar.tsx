@@ -53,8 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({handleFilters}) => {
                     id="sort-option"
                     value={sortOption}
                     label="Sortowanie"
-                    onChange={(e) => setSortOption(e.target.value)}
-                >
+                    onChange={(e) => setSortOption(e.target.value)}>
                     <MenuItem value="PRICE_ASC">Najniższa cena</MenuItem>
                     <MenuItem value="PRICE_DESC">Najwyższa cena</MenuItem>
                     <MenuItem value="OPINION_DESC">Najwyższa ocena</MenuItem>

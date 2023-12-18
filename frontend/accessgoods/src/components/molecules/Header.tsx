@@ -88,8 +88,8 @@ const Header = () => {
                         >
                             <MenuItem onClick={logoutUser}>Wyloguj</MenuItem>
                             <MenuItem onClick={rentNewItem}>Wystaw przedmiot</MenuItem>
-                            <MenuItem onClick={handleClose}>Ustawienia</MenuItem>
                             <MenuItem onClick={myItems}>Moje Przedmioty</MenuItem>
+                            <MenuItem onClick={handleClose}>Ustawienia</MenuItem>
                         </Menu>
                     </div>
                 )}
