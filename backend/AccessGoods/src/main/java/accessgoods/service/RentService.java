@@ -8,10 +8,13 @@ import accessgoods.model.RentStatus;
 import accessgoods.repository.RentRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RentService extends CrudService<Long, Rent> {
@@ -51,6 +54,25 @@ public class RentService extends CrudService<Long, Rent> {
         return availableStatuses;
     }
 
+    public List<String> getPossibleRentTimes(Long itemId) {
+        List<Rent> rents = rentRepository.findByItem_IdAndReturnTimeAfter(itemId, LocalDate.now());
+
+        List<String> rentedDates = rents.stream()
+                .flatMap(rent -> getDatesBetween(rent.getRentTime(), rent.getReturnTime()).stream())
+                .distinct()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+
+        return rentedDates;
+    }
+
+    private List<LocalDate> getDatesBetween(LocalDate startDate, LocalDate endDate) {
+        List<LocalDate> dates = new ArrayList<>();
+        for (LocalDate date = startDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
+            dates.add(date);
+        }
+        return dates;
+    }
 
     public Rent createRent(Rent rent) {
         Item item = itemService.getById(rent.getItem().getId());

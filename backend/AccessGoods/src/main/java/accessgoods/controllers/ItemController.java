@@ -87,7 +87,7 @@ public class ItemController {
     @Transactional
     public ResponseEntity<ItemDto> updateItem(@PathVariable Long id, @RequestBody ItemPostDto itemPostDto) {
         try {
-            Item Item = itemService.update(id, itemMapper.postDtoToEntity(itemPostDto));
+            Item Item = itemService.updateItem(id, itemPostDto);
             return ok(itemMapper.entityToDto(Item));
         } catch (Exception e) {
             throw new EntityNotFoundException(e.getMessage());

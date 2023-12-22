@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -49,10 +50,15 @@ public class RentController {
         return ok(rentMapper.entityToDto(rent));
     }
 
-    @GetMapping("/getByAccountId/{ItemId}")
+    @GetMapping("/getByAccountId/{accountId}")
     public ResponseEntity<RentDto> getRentByAccountId(@PathVariable Long accountId) {
         Rent rent = rentService.getById(accountId);
         return ok(rentMapper.entityToDto(rent));
+    }
+
+    @GetMapping("/rentDatesByItemId/{itemId}")
+    public ResponseEntity<List<String>> getPossibleRentDatesById(@PathVariable Long itemId) {
+        return ok(rentService.getPossibleRentTimes(itemId));
     }
 
     @PostMapping("/add")

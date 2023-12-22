@@ -25,5 +25,6 @@ public class ItemDto {
     private String accountFirstName;
     private String accountLastName;
     private String accountImage;
+    private Long categoryId;
 
 }
