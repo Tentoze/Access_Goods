@@ -3,9 +3,9 @@ import { Box } from '@mui/material';
 import { Add } from '@mui/icons-material';
 const MAX_IMAGE_SIZE = 250 * 1024; // 250KB
 
-const ImageUpload: React.FC<{onImageSrc: (src: string) => void}> = ({ onImageSrc }) => {
+const ImageUpload: React.FC<{onImageSrc: (src: string) => void,currentImageSrc?: string}> = ({ onImageSrc, currentImageSrc}) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [imageSrc, setImageSrc] = useState<string>('');
+    const [imageSrc, setImageSrc] = useState<string>(currentImageSrc ? currentImageSrc : '');
 
     const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];

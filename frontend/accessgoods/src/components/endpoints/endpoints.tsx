@@ -29,6 +29,7 @@ export const getItem = async (itemId: number) => {
             description,
             categoryId
         } = itemData;
+        console.log('beka XD',categoryId)
         return new ItemDto(images, name, cost, rating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId);
     } catch (error) {
         throw new Error('Not found');

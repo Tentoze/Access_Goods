@@ -32,6 +32,26 @@ export const addItem = async (
         throw error;
     }
 };
+export const editItem = async (itemDto: ItemDto) => {
+    try {
+        const response = await Api.put(`/items/update/${itemDto.itemId}`, {
+            name: itemDto.name,
+            description: itemDto.description,
+            cost: itemDto.pricePerDay,
+            images: itemDto.images,
+            categoryId: itemDto.categoryId
+        }, {
+            headers: {Authorization: getAuthorizationHeader()}
+        });
+        return {
+            id: response.data.id,
+            status: response.status
+        };
+    } catch (error) {
+        throw error;
+    }
+};
+
 type Filters = {
     searchTerm: string;
     categoryId: number;

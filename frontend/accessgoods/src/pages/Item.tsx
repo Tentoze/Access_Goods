@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Grid, Slider, Typography} from '@mui/material';
+import {Box, Button, Grid, Slider, Typography} from '@mui/material';
 import Header from "../components/molecules/Header";
 import ItemSearchBar from "../components/molecules/ItemSearchBar";
 import Footer from "../components/molecules/Footer";
@@ -7,6 +7,9 @@ import {useParams} from "react-router-dom";
 import {getItem} from "../components/endpoints/endpoints";
 import ItemDto from "../components/atoms/ItemDto";
 import {ImageSlider} from "../components/molecules/ImageSlider";
+import TryToRent from "../components/structures/TryToRent";
+import {getUnavailableDates} from "../components/endpoints/Rents";
+import {Calendar} from "react-date-range";
 
 
 const homeContentStyle = {
@@ -20,14 +23,16 @@ const homeContentStyle = {
 };
 const Item = () => {
     const [itemDto, setItemDto] = useState<ItemDto | null>(null);
+    const [openRentDialog, setOpenRentDialog] = useState(false);
+    const [unavailableDates, setUnavailableDates] = useState<Date[]>([])
     const {itemId} = useParams();
-
 
     useEffect(() => {
         const fetchItem = async () => {
             try {
                 const data = await getItem(Number(itemId));
                 setItemDto(data);
+                setUnavailableDates(await getUnavailableDates(Number(itemId)))
                 console.log(data);
 
             } catch (error) {
@@ -60,14 +65,14 @@ const Item = () => {
                                     {itemDto && (
                                         <Box sx={{
                                             marginLeft: '10vh',
-                                            padding:'5px',
-                                            paddingRight:'500px',
+                                            padding: '5px',
+                                            paddingRight: '500px',
                                             border: '2px solid rgb(128,128,128,0.3)',
                                         }}>
-                                            <Typography variant="h5" >
+                                            <Typography variant="h5">
                                                 Opis:
                                             </Typography>
-                                            <Typography >
+                                            <Typography>
                                                 {itemDto.description}
                                             </Typography>
                                         </Box>
@@ -107,8 +112,39 @@ const Item = () => {
                                         <Typography variant="h6" sx={{alignText: 'center'}}>
                                             Sprzedający: <br/>{itemDto.accountFirstName + ' ' + itemDto.accountLastName}
                                         </Typography>
+                                        <Box sx={{paddingTop:'3vh'}}>
+
+                                            <Typography variant="h6" sx={{
+                                                paddingLeft: '7vh',
+                                                paddingTop: '3vh',
+                                                alignText: 'center',
+                                                margin: 'auto',
+
+                                            }}>
+                                                Dostępne dni
+                                            </Typography>
+                                            <div style={{marginTop: '-10px'}}>
+                                                <Calendar
+                                                    minDate={new Date()}
+                                                    maxDate={new Date(new Date().getFullYear() + 1, 11, 31)}
+                                                    dateDisplayFormat="dd.MM.yyyy"
+                                                    disabledDates={unavailableDates}
+                                                />
+                                            </div>
+                                            <Button sx={{  marginLeft: '5vh',}} variant="contained" onClick={() => setOpenRentDialog(true)}>Wypożycz
+                                                przedmiot</Button>
+                                            <TryToRent
+                                                open={openRentDialog}
+                                                handleOpenMethod={() => setOpenRentDialog(true)}
+                                                handleCloseMethod={() => setOpenRentDialog(false)}
+                                                reservedDates={unavailableDates}
+                                                pricePerDay={itemDto!.pricePerDay}
+                                            />
+                                        </Box>
                                     </Box>
+
                                 )}
+
                             </Grid>
                         </Grid>
                     </Grid>
