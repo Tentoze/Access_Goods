@@ -9,6 +9,7 @@ import Registration from "./pages/Registration";
 import RentNewItem from "./pages/RentNewItem";
 import MyItems from "./pages/MyItems";
 import EditItem from "./pages/EditItem";
+import MyRents from "./pages/MyRents";
 
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
                 <Route path="/rent-new-item" Component={RentNewItem}/>
                 <Route path="/my-items" Component={MyItems}/>
                 <Route path="/edit-item/:itemId" Component={EditItem}/>
+                <Route path="/my-rents" Component={MyRents}/>
             </Routes>
         </Router>
     );

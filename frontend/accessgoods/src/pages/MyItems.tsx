@@ -11,7 +11,8 @@ const homeContentStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: '30px'
+    paddingTop: '30px',
+    paddingBottom: '100px'
 };
 const MyItems = () => {
     const [items, setItems] = useState<ItemDto[]>()

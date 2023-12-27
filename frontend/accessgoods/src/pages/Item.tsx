@@ -10,6 +10,7 @@ import {ImageSlider} from "../components/molecules/ImageSlider";
 import TryToRent from "../components/structures/TryToRent";
 import {getUnavailableDates} from "../components/endpoints/Rents";
 import {Calendar} from "react-date-range";
+import {useNavigate} from "react-router";
 
 
 const homeContentStyle = {
@@ -26,6 +27,7 @@ const Item = () => {
     const [openRentDialog, setOpenRentDialog] = useState(false);
     const [unavailableDates, setUnavailableDates] = useState<Date[]>([])
     const {itemId} = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchItem = async () => {
@@ -112,7 +114,7 @@ const Item = () => {
                                         <Typography variant="h6" sx={{alignText: 'center'}}>
                                             Sprzedający: <br/>{itemDto.accountFirstName + ' ' + itemDto.accountLastName}
                                         </Typography>
-                                        <Box sx={{paddingTop:'3vh'}}>
+                                        <Box sx={{paddingTop: '3vh'}}>
 
                                             <Typography variant="h6" sx={{
                                                 paddingLeft: '7vh',
@@ -131,15 +133,31 @@ const Item = () => {
                                                     disabledDates={unavailableDates}
                                                 />
                                             </div>
-                                            <Button sx={{  marginLeft: '5vh',}} variant="contained" onClick={() => setOpenRentDialog(true)}>Wypożycz
-                                                przedmiot</Button>
-                                            <TryToRent
-                                                open={openRentDialog}
-                                                handleOpenMethod={() => setOpenRentDialog(true)}
-                                                handleCloseMethod={() => setOpenRentDialog(false)}
-                                                reservedDates={unavailableDates}
-                                                pricePerDay={itemDto!.pricePerDay}
-                                            />
+                                            {itemDto.accountId !== Number(localStorage.getItem("accountId")) ?
+                                                <Box>
+                                                    <Button sx={{marginLeft: '5vh',}} variant="contained"
+                                                            onClick={() => setOpenRentDialog(true)}>Wypożycz
+                                                        przedmiot</Button>
+                                                    <TryToRent
+                                                        open={openRentDialog}
+                                                        handleOpenMethod={() => setOpenRentDialog(true)}
+                                                        handleCloseMethod={() => setOpenRentDialog(false)}
+                                                        reservedDates={unavailableDates}
+                                                        pricePerDay={itemDto!.pricePerDay}
+                                                        itemId={Number(itemId!)}/>
+                                                </Box>
+                                                :
+                                                <Box>
+                                                    <Button sx={{
+                                                        marginLeft: '5vh', backgroundColor: 'red',
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(207, 2, 2)', // Zmniejszenie przejrzystości podczas najechania
+                                                        },
+                                                    }} variant="contained"
+                                                            onClick={() => navigate(`/edit-item/${itemDto!.itemId}`)}>
+                                                        Edytuj przedmiot</Button>
+                                                </Box>}
+
                                         </Box>
                                     </Box>
 

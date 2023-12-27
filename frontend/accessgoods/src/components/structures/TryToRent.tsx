@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { Dialog, Box, Button, TextField } from '@mui/material';
-import { DateRange } from 'react-date-range';
+import React, {useState} from 'react';
+import {Dialog, Box, Button, TextField, Typography} from '@mui/material';
+import {DateRange} from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // Zaimportuj styl
-import 'react-date-range/dist/theme/default.css'; // Zaimportuj styl
+import 'react-date-range/dist/theme/default.css';
+import {addRent} from "../endpoints/Rents";
+import {useNavigate} from "react-router"; // Zaimportuj styl
 
 interface TryToRentProps {
     open: boolean;
@@ -10,10 +12,11 @@ interface TryToRentProps {
     handleOpenMethod: () => void;
     handleCloseMethod: () => void;
     pricePerDay: number;
+    itemId: number;
 }
 
 
-const TryToRent = ({ open, reservedDates, handleOpenMethod, handleCloseMethod, pricePerDay }: TryToRentProps) => {
+const TryToRent = ({open, reservedDates, handleOpenMethod, handleCloseMethod, pricePerDay, itemId}: TryToRentProps) => {
     const [dateRange, setDateRange] = useState([
         {
             startDate: new Date(), // Dzisiaj
@@ -21,6 +24,8 @@ const TryToRent = ({ open, reservedDates, handleOpenMethod, handleCloseMethod, p
             key: 'selection',
         },
     ]);
+    const [endDateWithAdjustOneDay, setEndDateWithAdjustOneDay] = useState(new Date(new Date().getTime() + (24 * 60 * 60 * 1000) * 2))
+    const navigate = useNavigate();
 
     const today = new Date();
     const nextYear = new Date(today.getFullYear() + 1, 11, 31); // Koniec następnego roku
@@ -32,8 +37,11 @@ const TryToRent = ({ open, reservedDates, handleOpenMethod, handleCloseMethod, p
         handleCloseMethod();
     };
 
-    const handleRent = () => {
-        // Logika obliczeń i zapisu wybranego zakresu dat
+    const handleRent = async () => {
+        const response = await addRent(itemId, new Date(dateRange[0].startDate.getTime() + (2 * 60 * 60 * 1000)), endDateWithAdjustOneDay)
+        if (response === 200) {
+            navigate("/my-rents")
+        }
     };
 
     return (
@@ -50,27 +58,37 @@ const TryToRent = ({ open, reservedDates, handleOpenMethod, handleCloseMethod, p
                         borderRadius: '5px',
                     }}
                 >
-                    <DateRange
+                    <Box>
+                        <DateRange
 
-                        editableDateInputs={true}
-                        dateDisplayFormat="dd.MM.yyyy"
-                        onChange={(item) => {
-                            setDateRange([
-                                {
-                                    startDate: item.selection.startDate || dateRange[0].startDate,
-                                    endDate: item.selection.endDate || dateRange[0].endDate,
-                                    key: 'selection',
-                                },
-                            ]);
-                        }}
-                        ranges={dateRange}
-                        disabledDates={reservedDates}
-                        minDate={today}
-                        maxDate={nextYear}
-                    />
-                    {/* Reszta Twojego kodu */}
-                    <Button onClick={handleRent}>Confirm Rental</Button>
+                            editableDateInputs={true}
+                            dateDisplayFormat="dd.MM.yyyy"
+                            onChange={(item) => {
+                                setDateRange([
+                                    {
+                                        startDate: item.selection.startDate || dateRange[0].startDate,
+                                        endDate: item.selection.endDate || dateRange[0].endDate,
+                                        key: 'selection',
+                                    },
+                                ]);
+                                if (item.selection.endDate) {
+                                    setEndDateWithAdjustOneDay(new Date(item.selection.endDate.getTime() + (24 * 60 * 60 * 1000)))
+                                }
+                            }}
+                            ranges={dateRange}
+                            disabledDates={reservedDates}
+                            minDate={today}
+                            maxDate={nextYear}
+                        />
+                    </Box>
+                    <Typography variant={"h6"}>Cena
+                        za {(((endDateWithAdjustOneDay.getTime() - dateRange[0].startDate.getTime())) / (1000 * 60 * 60 * 24))} dni
+                        : {(((endDateWithAdjustOneDay.getTime() - dateRange[0].startDate.getTime())) / (1000 * 60 * 60 * 24)) * pricePerDay} PLN</Typography>
+                    <Box sx={{marginLeft: '65px'}}>
+                        <Button variant='contained' onClick={handleRent}>Wypożycz przedmiot</Button>
+                    </Box>
                 </Box>
+
             </Dialog>
         </div>
     );

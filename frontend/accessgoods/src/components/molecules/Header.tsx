@@ -35,6 +35,10 @@ const Header = () => {
         handleClose()
         navigate('/my-items')
     }
+    const myRents = () => {
+        handleClose()
+        navigate('/my-rents')
+    }
     const goToCurrentRents = () => {
         handleClose();
     };
@@ -89,6 +93,7 @@ const Header = () => {
                             <MenuItem onClick={logoutUser}>Wyloguj</MenuItem>
                             <MenuItem onClick={rentNewItem}>Wystaw przedmiot</MenuItem>
                             <MenuItem onClick={myItems}>Moje Przedmioty</MenuItem>
+                            <MenuItem onClick={myRents}>Moje Wypożyczenia</MenuItem>
                             <MenuItem onClick={handleClose}>Ustawienia</MenuItem>
                         </Menu>
                     </div>
