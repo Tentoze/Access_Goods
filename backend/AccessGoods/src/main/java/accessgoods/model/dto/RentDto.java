@@ -19,10 +19,12 @@ import java.time.LocalDateTime;
 public class RentDto {
     private Long id;
     private Long itemId;
+    private String itemName;
+    private String itemPhoto;
     private Long lendingAccountId;
     private Long borrowingAccountId;
     private float totalCost;
-    private LocalDate returnTime;
-    private LocalDate rentTime;
+    private String returnTime;
+    private String rentTime;
     private RentStatus rentStatus;
 }

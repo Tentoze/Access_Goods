@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RentPostDto {
     private Long itemId;
-    private Long lendingAccountId;
-    private Long borrowingAccountId;
     private LocalDate returnTime;
     private LocalDate rentTime;
 }

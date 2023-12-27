@@ -43,4 +43,16 @@ public class Rent {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private RentStatus rentStatus;
+
+    @Override
+    public String toString() {
+        return "Rent{" +
+                "id=" + id +
+                ", totalCost=" + totalCost +
+                ", rentTime=" + rentTime +
+                ", returnTime=" + returnTime +
+                ", opinion=" + opinion +
+                ", rentStatus=" + rentStatus +
+                '}';
+    }
 }

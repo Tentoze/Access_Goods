@@ -23,6 +23,4 @@ public class AccountDto {
     private String photo;
     private boolean isEnabled = true;
 
-    private Role role = Role.CLIENT;
-
 }

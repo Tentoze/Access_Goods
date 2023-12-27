@@ -1,7 +1,7 @@
 package accessgoods.service;
 
-import accessgoods.exceptions.EntityNotFoundException;
 import accessgoods.exceptions.IncorrectStatusChangeException;
+import accessgoods.model.Account;
 import accessgoods.model.Item;
 import accessgoods.model.Rent;
 import accessgoods.model.RentStatus;
@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +19,14 @@ public class RentService extends CrudService<Long, Rent> {
     private final RentRepository rentRepository;
     private final AccountServiceImpl accountService;
     private final ItemService itemService;
+    private final AccountDetailsService accountDetailsService;
 
-    public RentService(RentRepository rentRepository, AccountServiceImpl accountService, ItemService itemService) {
+    public RentService(RentRepository rentRepository, AccountServiceImpl accountService, ItemService itemService, AccountDetailsService accountDetailsService) {
         super(rentRepository, Rent.class);
         this.rentRepository = rentRepository;
         this.accountService = accountService;
         this.itemService = itemService;
+        this.accountDetailsService = accountDetailsService;
     }
 
     private static List<RentStatus> getStatusFlow(Rent rent) {
@@ -65,6 +65,13 @@ public class RentService extends CrudService<Long, Rent> {
 
         return rentedDates;
     }
+    public List<Rent> getCurrentUserRents() {
+        Account currentUser = accountDetailsService.getCurrentUser();
+        if(currentUser == null) {
+            throw new IllegalStateException("User is not logged in");
+        }
+        return rentRepository.findByBorrowingAccount_IdOrLendingAccount_Id(currentUser.getId(), currentUser.getId());
+    }
 
     private List<LocalDate> getDatesBetween(LocalDate startDate, LocalDate endDate) {
         List<LocalDate> dates = new ArrayList<>();
@@ -76,20 +83,22 @@ public class RentService extends CrudService<Long, Rent> {
 
     public Rent createRent(Rent rent) {
         Item item = itemService.getById(rent.getItem().getId());
-        if (isCurrentUserIsLender(rent)) {
+        rent.setLendingAccount(item.getAccount());
+        Account borrowingAccount = accountDetailsService.getCurrentUser();
+        if (isCurrentUserIsLender(borrowingAccount, rent)) {
             throw new IllegalStateException("You cannot rent your item");
         }
+        rent.setBorrowingAccount(borrowingAccount);
         rent.setTotalCost(ChronoUnit.DAYS.between(rent.getRentTime(), rent.getReturnTime()) * item.getCost());
         rent.setRentStatus(RentStatus.TO_ACCEPT);
         return create(rent);
     }
 
-    private boolean isCurrentUserIsLender(Rent rent) {
-        String email = AccountDetailsService.getCurrentUserEmail();
-        if (email == null) {
+    private boolean isCurrentUserIsLender(Account borrowingUser, Rent rent) {
+        if (borrowingUser == null) {
             throw new IllegalStateException("User is not logged in");
         }
-        return rent.getLendingAccount().getId().equals(accountService.getAccount(email).getId());
+        return rent.getLendingAccount().equals(borrowingUser);
     }
 
     private boolean isCurrentUserIsBorrower(Rent rent) {

@@ -43,6 +43,11 @@ public class RentController {
         List<Rent> rents = rentService.getAll();
         return ok(rents.stream().map(rentMapper::entityToDto).toList());
     }
+    @GetMapping("/getCurrentUserRents")
+    public ResponseEntity<List<RentDto>> getCurrentUserRents() {
+        List<Rent> rents = rentService.getCurrentUserRents();
+        return ok(rents.stream().map(rentMapper::entityToDto).toList());
+    }
 
     @GetMapping("/getById/{rentId}")
     public ResponseEntity<RentDto> getRent(@PathVariable Long rentId) {

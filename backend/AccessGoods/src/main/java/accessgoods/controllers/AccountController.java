@@ -34,6 +34,14 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
+    @GetMapping("/{accountId}")
+    public ResponseEntity<AccountDto> getAccountInfo(@PathVariable Long accountId) {
+        try {
+            return ResponseEntity.ok(mapper.entityToDto(accountService.getAccount(accountId)));
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
+    }
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")

@@ -24,4 +24,11 @@ public class Image {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Override
+    public String toString() {
+        return "Image{" +
+                "id=" + id +
+                ", image='" + image + '\'' +
+                '}';
+    }
 }

@@ -36,4 +36,14 @@ public class Opinion {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private FeedbackTarget feedbackTarget;
+
+    @Override
+    public String toString() {
+        return "Opinion{" +
+                "id=" + id +
+                ", rating=" + rating +
+                ", description='" + description + '\'' +
+                ", feedbackTarget=" + feedbackTarget +
+                '}';
+    }
 }

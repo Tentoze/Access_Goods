@@ -14,7 +14,6 @@ public interface AccountMapper extends MapperBase<Account, AccountDto, Registrat
         return AccountDto.builder()
                 .id(entity.getId())
                 .firstName(entity.getFirstName())
-                .role(entity.getRole())
                 .photo(entity.getPhoto())
                 .phoneNumber(entity.getPhoneNumber())
                 .lastName(entity.getLastName())

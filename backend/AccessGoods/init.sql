@@ -105,9 +105,9 @@ VALUES (1, 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHCBIVERgVE
 -- Dodanie identyfikatorów do tabeli 'rent'
 INSERT INTO rent (rent_id, lending_account_id, borrowing_account_id, item_id, total_cost, rent_time, return_time,
                   rent_status)
-VALUES (1, 1, 2, 1, 50.00, CURRENT_TIMESTAMP, NULL, 'IN_RENT'),
-       (2, 2, 1, 2, 10.00, CURRENT_TIMESTAMP, NULL, 'TO_ACCEPT'),
-       (3, 3, 1, 3, 20.00, CURRENT_TIMESTAMP, NULL, 'TO_ACCEPT');
+VALUES (1, 1, 2, 1, 50.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'IN_RENT'),
+       (2, 2, 1, 2, 10.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TO_ACCEPT'),
+       (3, 3, 1, 3, 20.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TO_ACCEPT');
 
 INSERT INTO opinion (opinion_id, item_id, description, feedback_target, rating, giver_account_id, receiver_account_id,
                      rent_id)

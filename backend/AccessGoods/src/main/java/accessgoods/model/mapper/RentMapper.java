@@ -19,20 +19,20 @@ public interface RentMapper extends MapperBase<Rent, RentDto, RentPostDto> {
         return RentDto.builder()
                 .id(rent.getId())
                 .rentStatus(rent.getRentStatus())
-                .rentTime(rent.getRentTime())
+                .rentTime(rent.getRentTime().toString())
+                .itemName(rent.getItem().getName())
+                .itemPhoto(rent.getItem().getImages() != null ? rent.getItem().getImages().get(0).getImage() : "")
                 .borrowingAccountId(rent.getBorrowingAccount().getId())
-                .lendingAccountId(rent.getId())
+                .lendingAccountId(rent.getLendingAccount().getId())
                 .itemId(rent.getId())
                 .totalCost(rent.getTotalCost())
-                .returnTime(rent.getReturnTime())
+                .returnTime(rent.getReturnTime().toString())
                 .build();
     }
 
     @Override
     default Rent postDtoToEntity(RentPostDto rentPostDto) {
         return Rent.builder()
-                .borrowingAccount(Account.builder().id(rentPostDto.getBorrowingAccountId()).build())
-                .lendingAccount(Account.builder().id(rentPostDto.getLendingAccountId()).build())
                 .rentTime(rentPostDto.getRentTime())
                 .returnTime(rentPostDto.getReturnTime())
                 .item(Item.builder().id(rentPostDto.getItemId()).build())

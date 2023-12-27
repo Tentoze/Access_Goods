@@ -46,4 +46,18 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Opinion> opinions;
 
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", cost=" + cost +
+                ", images=" + images +
+                ", isActive=" + isActive +
+                ", rents=" + rents +
+                ", category=" + category +
+                ", opinions=" + opinions +
+                '}';
+    }
 }
