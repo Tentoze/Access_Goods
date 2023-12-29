@@ -5,9 +5,10 @@ import CloseIcon from '@mui/icons-material/Close';
 interface SuccessDialogProps {
     open: boolean;
     onClose: () => void;
+    textOnSuccess: string;
 }
 
-const SuccessDialog: React.FC<SuccessDialogProps> = ({ open, onClose }) => {
+const SuccessDialog: React.FC<SuccessDialogProps> = ({ open, onClose, textOnSuccess }) => {
     const handleClose = () => {
         onClose();
     };
@@ -37,7 +38,7 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({ open, onClose }) => {
                     Sukces
                 </Typography>
                 <Typography variant="h6" mt={2} sx={{ textAlign: 'center' }}>
-                    Rejestracja zakończona pomyślnie. Link aktywacyjny został wysłany na Twój adres e-mail.
+                    {textOnSuccess}
                 </Typography>
             </Box>
         </Dialog>

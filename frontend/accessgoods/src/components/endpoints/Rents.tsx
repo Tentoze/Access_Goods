@@ -24,6 +24,7 @@ export const addRent = async (itemId: number, rentTime: Date, returnTime: Date) 
         throw error;
     }
 };
+
 export interface Rent {
     id: number;
     itemId: number;
@@ -40,7 +41,7 @@ export interface Rent {
 export const getCurrentUserRents = async (): Promise<Rent[]> => {
     try {
         const response = await Api.get(`/rents/getCurrentUserRents`, {
-            headers: { Authorization: getAuthorizationHeader() },
+            headers: {Authorization: getAuthorizationHeader()},
         });
 
         const rents: Rent[] = response.data.map((rent: Rent) => {
@@ -76,11 +77,22 @@ export const getCurrentUserRents = async (): Promise<Rent[]> => {
         throw error;
     }
 };
-export const getChangeStatusPossibilities = async (itemId: number): Promise<string[]> => {
+export const getChangeStatusPossibilities = async (rentId: number): Promise<string[]> => {
     try {
-        const response = await Api.get(`/rents/getPossibleStatusFlow/${itemId}`);
+        const response = await Api.get(`/rents/getPossibleStatusFlow/${rentId}`);
         const statusPossibilities: string[] = response.data; // Załóżmy, że wynik to lista stringów
         return statusPossibilities;
+    } catch (error) {
+        throw error;
+    }
+};
+export const changeRentStatus = async (rentId: number, toStatus: String): Promise<Number> => {
+    try {
+        const response = await Api.put(`/rents/changeStatus/${rentId}`, {}, {
+            params: {rentStatus: toStatus},
+            headers: {Authorization: getAuthorizationHeader()},
+        });
+        return response.status;
     } catch (error) {
         throw error;
     }

@@ -157,7 +157,7 @@ const Registration = () => {
                     </form>
                 </Box>
                 <div>
-                    <SuccessDialog open={successMessage} onClose={handleCloseSnackbar}/>
+                    <SuccessDialog open={successMessage} onClose={handleCloseSnackbar} textOnSuccess={"Rejestracja zakończona pomyślnie. Link aktywacyjny został wysłany na Twój adres e-mail."}/>
                 </div>
             </Box>
             <Footer/>

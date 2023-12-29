@@ -2,12 +2,15 @@ import React, {useEffect, useState} from 'react';
 import {Autocomplete, Avatar, Box, Button, Container, Menu, MenuItem, TextField, Typography} from '@mui/material';
 import {useNavigate} from "react-router";
 import {getAccount} from "../endpoints/Accounts";
-import {getChangeStatusPossibilities} from "../endpoints/Rents";
+import {changeRentStatus, getChangeStatusPossibilities} from "../endpoints/Rents";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import {Link} from "react-router-dom";
+import SuccessDialog from "./SuccessDialog";
 
 
 interface rentWindowProps {
     rentDto: {
+        id: number,
         itemId: number,
         itemName: string,
         itemPhoto: string,
@@ -27,8 +30,7 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
     const [statusMenuAnchorEl, setStatusMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [statusOptions, setStatusOptions] = useState<string[]>([]);
     const [rentStatus, setRentStatus] = useState<string>(rentDto.rentStatus);
-
-
+    const [successMessage, setSuccessMessage] = useState(false);
 
     const navigate = useNavigate();
 
@@ -56,6 +58,13 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
 
     const handleStatusMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
         setStatusMenuAnchorEl(event.currentTarget);
+
+    };
+    const setStatus = async () => {
+        const responseStatus = await changeRentStatus(rentDto.id, rentStatus)
+        if (responseStatus === 200) {
+            return
+        }
     };
 
     const handleStatusMenuClose = () => {
@@ -67,6 +76,11 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
 
         // Zamknięcie menu
         handleStatusMenuClose();
+    };
+
+    const handleCloseSnackbar = () => {
+        setSuccessMessage(false);
+        navigate('/')
     };
 
     useEffect(
@@ -88,42 +102,48 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
         >
             {/* Zdjęcie po lewej stronie */}
             {userDetails && (
-                <Avatar
-                    variant="square"
-                    alt={`${rentDto.itemName}`}
-                    src={rentDto.itemPhoto}
-                    sx={{width: 100, height: 100}}
-                />
+                <Link to={`/item/${(rentDto.itemId)}`}>
+                    <Avatar
+                        variant="square"
+                        alt={`${rentDto.itemName}`}
+                        src={rentDto.itemPhoto}
+                        sx={{width: 100, height: 100}}
+                    />
+                </Link>
             )}
 
             {/* Informacje o przedmiocie */}
             <Box sx={{flexGrow: 1}}>
                 <Typography variant="h6">{rentDto.itemName}</Typography>
-                <Typography>
-                    {userDetails && (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
-                        >
-                            {/* Zdjęcie i imię/nazwisko użytkownika */}
+                {userDetails && (
+
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+
+                        }}
+                    >
+                        <Link to={`/account/${(userDetails.id)}`} style={{textDecoration: 'none', color: 'black'}}>
                             <Avatar
                                 alt={`${userDetails.firstName} ${userDetails.lastName}`}
                                 src={userDetails.photo}
-                                sx={{width: 32, height: 32, mr: 1}}
+                                sx={{width: 32, height: 32, mr: 1, float: 'left'}}
                             />
-                            <Typography>
+                            <Typography sx={{textDecoration: 'none', float: 'left', paddingTop: '4px'}}>
                                 {userDetails.firstName} {userDetails.lastName}
                             </Typography>
-                        </Box>
-                    )}
-                </Typography>
+                        </Link>
 
-                <Typography >Aktualny status:
+                    </Box>
+                )}
+                <Box sx={{marginBottom: '5px'}}>
+                    <Typography sx={{float: 'left', marginRight: '5px'}}>Aktualny status: </Typography>
                     {userDetails && currentAccountId === rentDto.lendingAccountId ? (
-                        <Box sx={{float: 'right',gap: '8px'}}>
-                            <Button sx={{height: '1.5rem',paddingLeft: '8px', paddingRight:'8px'}} variant="contained" onClick={handleStatusMenuOpen} endIcon={<KeyboardArrowDownIcon/>}>
+                        <Box sx={{float: 'left'}}>
+                            <Button sx={{height: '1.5rem', marginTop: '-3px', paddingLeft: '8px', paddingRight: '8px'}}
+                                    variant="contained"
+                                    onClick={handleStatusMenuOpen} endIcon={<KeyboardArrowDownIcon/>}>
                                 {rentStatus}
                             </Button>
                             <Menu
@@ -138,22 +158,34 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
                                     </MenuItem>
                                 ))}
                             </Menu>
-                            <Box sx={{float: 'right',marginLeft: '8px'}}>
+                            <Box sx={{float: 'right', marginLeft: '8px'}}>
                                 {rentStatus !== rentDto.rentStatus ?
                                     (
-                                    <Button sx={{float:'right',height: '1.5rem',paddingLeft: '8px', paddingRight:'8px'}} variant="contained" onClick={handleStatusMenuOpen}>
-                                        Zapisz status
-                                    </Button>)
-                                : (<div></div>)}
+                                        <Button sx={{
+                                            float: 'right',
+                                            height: '1.5rem',
+
+                                            paddingLeft: '8px',
+                                            paddingRight: '8px'
+                                        }} variant="contained" onClick={setStatus}>
+                                            Zapisz status
+                                        </Button>)
+                                    : (<div></div>)}
                             </Box>
                         </Box>
                     ) : rentDto.rentStatus}
-                </Typography>
-
-                <Typography>Cena rezerwacji: {rentDto.totalCost} PLN</Typography>
+                </Box>
+                <br/>
+                <Typography sx={{float: 'left'}}>Cena rezerwacji: {rentDto.totalCost} PLN</Typography>
+                <Typography sx={{float: 'left'}}>Data rezerwacji
+                    od: <b>{rentDto.rentTime} </b> do: <b>{rentDto.returnTime}</b></Typography>
             </Box>
+            <div>    <SuccessDialog open={successMessage} onClose={handleCloseSnackbar} textOnSuccess={"Udało sie zmienic status"}/>
+            </div>
         </Box>
-    );
+
+
+);
 };
 
 export default RentWindow;
