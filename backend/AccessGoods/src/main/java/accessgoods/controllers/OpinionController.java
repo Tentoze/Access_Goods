@@ -1,5 +1,6 @@
 package accessgoods.controllers;
 
+import accessgoods.model.FeedbackTarget;
 import accessgoods.model.Opinion;
 import accessgoods.model.dto.OpinionDto;
 import accessgoods.model.dto.OpinionPostDto;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -34,6 +36,12 @@ public class OpinionController {
     @GetMapping("/{itemId}")
     public ResponseEntity<OpinionDto> getOpinion(@PathVariable Long itemId) {
         Opinion opinion = opinionService.getById(itemId);
+        return ok(opinionMapper.entityToDto(opinion));
+    }
+
+    @GetMapping("/currentUserOpinionForSpecificUserAndFeedbackTarget/{accountId}/{feedbackTarget}")
+    public ResponseEntity<OpinionDto> getCurrentUserOpinionToSpecificUser(@PathVariable Long accountId, @PathVariable FeedbackTarget feedbackTarget) {
+        Opinion opinion = opinionService.getCurrentUserOpinionByAccountIdAndFeedbackTarget(accountId, feedbackTarget);
         return ok(opinionMapper.entityToDto(opinion));
     }
 
@@ -61,7 +69,7 @@ public class OpinionController {
 
     @DeleteMapping("/delete/{id}")
     @Transactional
-    public ResponseEntity<OpinionDto> deleteItem(@PathVariable Long id) {
+    public ResponseEntity<OpinionDto> deleteOpinion(@PathVariable Long id) {
         try {
             Opinion opinion = opinionService.delete(id);
             return ok(opinionMapper.entityToDto(opinion));

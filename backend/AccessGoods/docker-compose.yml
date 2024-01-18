@@ -1,8 +1,10 @@
 version: '3'
 services:
   postgres:
-    image: postgres:latest
     container_name: my-postgres
+    build:
+      context: .
+      dockerfile: Dockerfile-db
     environment:
       POSTGRES_DB: access_goods
       POSTGRES_USER: postgres

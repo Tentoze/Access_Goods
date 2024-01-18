@@ -34,20 +34,20 @@ public class RentService extends CrudService<Long, Rent> {
         switch (rent.getRentStatus()) {
             case TO_ACCEPT:
                 availableStatuses.add(RentStatus.ACCEPTED);
-                availableStatuses.add(RentStatus.CANCELED);
+                availableStatuses.add(RentStatus.CANCELLED);
                 break;
             case ACCEPTED:
                 availableStatuses.add(RentStatus.IN_RENT);
-                availableStatuses.add(RentStatus.CANCELED);
+                availableStatuses.add(RentStatus.CANCELLED);
                 break;
             case IN_RENT:
                 availableStatuses.add(RentStatus.CLOSED);
-                availableStatuses.add(RentStatus.CANCELED);
+                availableStatuses.add(RentStatus.CANCELLED);
                 break;
             case CLOSED:
                 // Nie dodajemy nowych statusów
                 break;
-            case CANCELED:
+            case CANCELLED:
                 // Nie dodajemy nowych statusów
                 break;
         }

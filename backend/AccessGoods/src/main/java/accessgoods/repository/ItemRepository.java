@@ -22,9 +22,15 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "AND (i.cost >= :costFrom OR :costFrom IS NULL) " +
             "AND (i.cost <= :costUpTo OR :costUpTo IS NULL) " +
             "AND (i.account.photo IS NOT NULL OR :userHasPhoto IS NULL) " +
+            "AND (:searchLongitude IS NULL OR :searchLatitude IS NULL OR " +
+            "    ST_Distance(" +
+            "        ST_GeographyFromText(CONCAT('POINT(', i.account.localization.longitude, ' ', i.account.localization.latitude, ')')), " +
+            "        ST_GeographyFromText(CONCAT('POINT(', :searchLongitude, ' ', :searchLatitude, ')'))" +
+            "    ) <= :distanceInMeters" +
+            ") " +
             "ORDER BY " +
             "CASE " +
-            "   WHEN :sortBy = 'PRICE_ASC' THEN i.cost" +
+            "   WHEN :sortBy = 'PRICE_ASC' THEN i.cost " +
             "   WHEN :sortBy = 'PRICE_DESC' THEN -i.cost " +
             "   else i.id end")
     List<Item> searchItems(
@@ -33,7 +39,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             @Param("costFrom") Float costFrom,
             @Param("costUpTo") Float costUpTo,
             @Param("userHasPhoto") Boolean userHasPhoto,
-            @Param("sortBy") String sortBy
+            @Param("sortBy") String sortBy,
+            @Param("searchLongitude") Double searchLongitude,
+            @Param("searchLatitude") Double searchLatitude,
+            @Param("distanceInMeters") Double distanceInMeters
     );
+
 
 }

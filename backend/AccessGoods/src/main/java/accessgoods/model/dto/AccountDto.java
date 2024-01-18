@@ -13,14 +13,13 @@ import lombok.NoArgsConstructor;
 public class AccountDto {
 
     private Long id;
-
     private String email;
-
     private String firstName;
-
     private String lastName;
     private String phoneNumber;
     private String photo;
+    private Double longitude;
+    private Double latitude;
     private boolean isEnabled = true;
 
 }

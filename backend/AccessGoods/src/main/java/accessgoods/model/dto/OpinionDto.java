@@ -16,7 +16,7 @@ public class OpinionDto {
     private Long id;
     private Integer rating;
     private String description;
-    private AccountDto opinionGiverAccount;
-    private AccountDto opinionReceiverAccount;
+    private Long opinionGiverAccountId;
+    private Long opinionReceiverAccountId;
     private FeedbackTarget feedbackTarget;
 }

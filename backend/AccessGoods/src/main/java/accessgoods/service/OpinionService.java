@@ -1,10 +1,12 @@
 package accessgoods.service;
 
+import accessgoods.model.FeedbackTarget;
 import accessgoods.model.Opinion;
-import accessgoods.model.Rent;
-import accessgoods.model.RentStatus;
 import accessgoods.repository.OpinionRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class OpinionService extends CrudService<Long, Opinion> {
@@ -21,24 +23,24 @@ public class OpinionService extends CrudService<Long, Opinion> {
     }
 
     public Opinion createOpinion(Opinion opinion) {
-        Rent rent = rentService.getById(opinion.getRent().getId());
-        if (rent.getRentStatus() != RentStatus.CLOSED) {
-            throw new IllegalStateException("Rent status has to be in status 'CLOSED' to send opinion");
-        }
-        if (opinionRepository.findOpinionByRentIdAndOpinionGiverAccountId(opinion.getRent().getId(), opinion.getOpinionGiverAccount().getId()) != null) {
+        if (opinionRepository.findByOpinionGiverAccount_IdAndFeedbackTarget(opinion.getOpinionGiverAccount().getId(), opinion.getFeedbackTarget()).isEmpty()) {
             throw new IllegalStateException("Opinion cannot be send twice at the same rent");
         }
-        if (getCurrentUserId(opinion).equals(opinion.getOpinionGiverAccount().getId())) {
+        if (getCurrentUserId().equals(opinion.getOpinionReceiverAccount().getId())) {
             throw new IllegalStateException("You cannot send opinion to yourself");
         }
         return create(opinion);
     }
 
-    private Long getCurrentUserId(Opinion opinion) {
+    private Long getCurrentUserId() {
         String email = AccountDetailsService.getCurrentUserEmail();
         if (email == null) {
             throw new IllegalStateException("User is not logged in");
         }
         return accountService.getAccount(email).getId();
+    }
+
+    public Opinion getCurrentUserOpinionByAccountIdAndFeedbackTarget(Long accountId, FeedbackTarget feedbackTarget) {
+        return opinionRepository.findByOpinionGiverAccount_IdAndOpinionReceiverAccount_IdAndFeedbackTarget(getCurrentUserId(), accountId, feedbackTarget).orElseThrow(() -> new EntityNotFoundException("There is no opinion"));
     }
 }

@@ -37,9 +37,6 @@ public class Rent {
     private LocalDate rentTime;
     @Column
     private LocalDate returnTime;
-    @ManyToOne
-    private Opinion opinion;
-
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private RentStatus rentStatus;
@@ -51,7 +48,6 @@ public class Rent {
                 ", totalCost=" + totalCost +
                 ", rentTime=" + rentTime +
                 ", returnTime=" + returnTime +
-                ", opinion=" + opinion +
                 ", rentStatus=" + rentStatus +
                 '}';
     }

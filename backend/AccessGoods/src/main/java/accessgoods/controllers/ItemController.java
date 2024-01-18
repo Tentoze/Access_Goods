@@ -49,9 +49,19 @@ public class ItemController {
     }
 
     @GetMapping("/showMyItems")
-    public ResponseEntity<List<ItemDto>> getItem() {
+    public ResponseEntity<List<ItemDto>> getCurrentUserItems() {
         try {
             List<Item> items = itemService.showCurrentUserItems();
+            return ok(items.stream().map(itemMapper::entityToDto).toList());
+        } catch (Exception e) {
+            throw new EntityNotFoundException(e.getMessage());
+        }
+    }
+
+    @GetMapping("/byAccount/{accountId}")
+    public ResponseEntity<List<ItemDto>> getAccountIdItems(@PathVariable Long accountId) {
+        try {
+            List<Item> items = itemService.showUserItems(accountId);
             return ok(items.stream().map(itemMapper::entityToDto).toList());
         } catch (Exception e) {
             throw new EntityNotFoundException(e.getMessage());

@@ -2,6 +2,7 @@ package accessgoods.service;
 
 import accessgoods.model.Account;
 import accessgoods.model.AccountDetails;
+import accessgoods.model.Localization;
 import accessgoods.model.Role;
 import accessgoods.model.dto.RegistrationDto;
 import accessgoods.model.dto.SignInDto;
@@ -66,10 +67,11 @@ public class AccountServiceImpl implements AccountService {
                 .lastName(registrationForm.getLastName())
                 .phoneNumber(registrationForm.getPhoneNumber())
                 .photo(registrationForm.getPhoto())
-                        .role(Role.CLIENT)
-                        .createdAt(LocalDateTime.now())
-                        .isEnabled(true)
-                        .password(bCryptPasswordEncoder.encode(registrationForm.getPassword())).build()).getId();
+                .role(Role.CLIENT)
+                .createdAt(LocalDateTime.now())
+                .localization(new Localization(registrationForm.getLatitude(), registrationForm.getLongitude()))
+                .isEnabled(true)
+                .password(bCryptPasswordEncoder.encode(registrationForm.getPassword())).build()).getId();
     }
 
 

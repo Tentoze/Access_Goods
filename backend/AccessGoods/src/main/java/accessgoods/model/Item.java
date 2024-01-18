@@ -43,9 +43,6 @@ public class Item {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Opinion> opinions;
-
     @Override
     public String toString() {
         return "Item{" +
@@ -57,7 +54,6 @@ public class Item {
                 ", isActive=" + isActive +
                 ", rents=" + rents +
                 ", category=" + category +
-                ", opinions=" + opinions +
                 '}';
     }
 }

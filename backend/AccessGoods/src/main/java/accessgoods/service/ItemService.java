@@ -67,8 +67,12 @@ public class ItemService extends CrudService<Long, Item> {
         return items;
     }
 
+    public List<Item> showUserItems(Long accountId) throws AccessDeniedException {
+        return itemRepository.findByAccount_Id(accountId);
+    }
+
     public List<Item> search(FilterSearchDto filterSearchDto) {
-        return itemRepository.searchItems(filterSearchDto.getSearchTerm() == null ? null : filterSearchDto.getSearchTerm().toLowerCase(), filterSearchDto.getCategoryId(), filterSearchDto.getPriceFrom(), filterSearchDto.getPriceTo(), filterSearchDto.getUserHasPhoto(), filterSearchDto.getSortOption().name());
+        return itemRepository.searchItems(filterSearchDto.getSearchTerm() == null ? null : filterSearchDto.getSearchTerm().toLowerCase(), filterSearchDto.getCategoryId(), filterSearchDto.getPriceFrom(), filterSearchDto.getPriceTo(), filterSearchDto.getUserHasPhoto(), filterSearchDto.getSortOption().name(), filterSearchDto.getLongitude(), filterSearchDto.getLatitude(), filterSearchDto.getDistanceInMeters());
     }
 }
 

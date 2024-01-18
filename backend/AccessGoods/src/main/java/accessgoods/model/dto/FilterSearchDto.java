@@ -19,5 +19,8 @@ public class FilterSearchDto {
     private Boolean userHasPhoto;
     private Boolean withDelivery;
     private Boolean selfPickUp;
+    private Double longitude;
+    private Double latitude;
+    private Double distanceInMeters;
 
 }

@@ -56,6 +56,9 @@ public class Account {
 
     @Column
     private String password;
+
+    @Embedded
+    private Localization localization;
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> item;
     @OneToMany(mappedBy = "lendingAccount")
