@@ -33,6 +33,12 @@ public class OpinionController {
         return ok(opinions.stream().map(opinionMapper::entityToDto).toList());
     }
 
+    @GetMapping("/byAccount/{accountId}")
+    public ResponseEntity<List<OpinionDto>> getOpinionsByAccountId(@PathVariable Long accountId) {
+        List<Opinion> opinions = opinionService.getByAccountId(accountId);
+        return ok(opinions.stream().map(opinionMapper::entityToDto).toList());
+    }
+
     @GetMapping("/{itemId}")
     public ResponseEntity<OpinionDto> getOpinion(@PathVariable Long itemId) {
         Opinion opinion = opinionService.getById(itemId);

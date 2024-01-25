@@ -16,8 +16,12 @@ public interface AccountMapper extends MapperBase<Account, AccountDto, Registrat
                 .firstName(entity.getFirstName())
                 .photo(entity.getPhoto())
                 .phoneNumber(entity.getPhoneNumber())
+                .longitude(entity.getLocalization().getLongitude())
+                .latitude(entity.getLocalization().getLatitude())
+                .locationName(entity.getLocalization().getName())
                 .lastName(entity.getLastName())
                 .isEnabled(entity.isEnabled())
+                .avgRating(entity.getAverageRating())
                 .email(entity.getEmail()).build();
     }
 

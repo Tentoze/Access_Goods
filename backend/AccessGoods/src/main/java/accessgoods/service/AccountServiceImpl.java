@@ -69,7 +69,7 @@ public class AccountServiceImpl implements AccountService {
                 .photo(registrationForm.getPhoto())
                 .role(Role.CLIENT)
                 .createdAt(LocalDateTime.now())
-                .localization(new Localization(registrationForm.getLatitude(), registrationForm.getLongitude()))
+                .localization(new Localization(registrationForm.getLongitude(), registrationForm.getLatitude(), registrationForm.getLocationName()))
                 .isEnabled(true)
                 .password(bCryptPasswordEncoder.encode(registrationForm.getPassword())).build()).getId();
     }
@@ -124,6 +124,11 @@ public class AccountServiceImpl implements AccountService {
         client.setPassword(hashedPass);
         client.setModifiedAt(LocalDateTime.now());
         accountRepository.save(client);
+    }
+
+    @Transactional
+    public void saveAccount(Account account) {
+        accountRepository.save(account);
     }
 
     @Override

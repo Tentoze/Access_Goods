@@ -20,6 +20,8 @@ public class AccountDto {
     private String photo;
     private Double longitude;
     private Double latitude;
+    private String locationName;
+    private Float avgRating;
     private boolean isEnabled = true;
 
 }

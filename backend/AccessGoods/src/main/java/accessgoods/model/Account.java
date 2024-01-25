@@ -66,7 +66,12 @@ public class Account {
 
     @OneToMany(mappedBy = "borrowingAccount")
     private List<Rent> borrowedItems;
-
+    @OneToMany(mappedBy = "opinionGiverAccount")
+    private List<Opinion> listOfGivenOpinions;
+    @OneToMany(mappedBy = "opinionReceiverAccount")
+    private List<Opinion> listOfTakenOpinions;
+    @Column
+    private Float averageRating;
 
     public Account(String firstName, String lastName, String email, String phoneNumber, String password) {
         this.email = email;

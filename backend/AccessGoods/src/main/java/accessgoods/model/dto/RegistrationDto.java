@@ -25,6 +25,7 @@ public class RegistrationDto {
     private String photo;
     private Double longitude;
     private Double latitude;
+    private String locationName;
 
     public static boolean validateEmail(String emailAddress) {
         return emailRegex

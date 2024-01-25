@@ -25,6 +25,11 @@ public class ItemDto {
     private String accountFirstName;
     private String accountLastName;
     private String accountImage;
+    private Float avgRating;
     private Long categoryId;
+    private Double longitude;
+    private Double latitude;
+    private String locationName;
+
 
 }

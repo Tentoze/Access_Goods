@@ -54,6 +54,7 @@ public class ItemService extends CrudService<Long, Item> {
         item.setCost(itemToSave.getCost());
         item.setName(itemToSave.getName());
         item.setDescription(itemToSave.getDescription());
+        item.setActive(itemToSave.isActive());
         item.setCategory(Category.builder().id(itemToSave.getCategoryId()).build());
         return super.update(id, item);
     }

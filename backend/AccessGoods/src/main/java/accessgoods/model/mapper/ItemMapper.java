@@ -40,6 +40,10 @@ public interface ItemMapper extends MapperBase<Item, ItemDto, ItemPostDto> {
                 .accountFirstName(item.getAccount().getFirstName())
                 .accountLastName(item.getAccount().getLastName())
                 .accountImage(item.getAccount().getPhoto())
+                .avgRating(item.getAccount().getAverageRating())
+                .longitude(item.getAccount().getLocalization().getLongitude())
+                .longitude(item.getAccount().getLocalization().getLatitude())
+                .locationName(item.getAccount().getLocalization().getName())
                 .categoryId(item.getCategory().getId())
                 .cost(item.getCost()).build();
     }

@@ -18,6 +18,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT i FROM Item i " +
             "WHERE " +
             "(LOWER(i.name) LIKE CONCAT('%', LOWER(:searchTerm), '%') OR :searchTerm IS NULL) " +
+            "AND (i.isActive = true)" +
             "AND (i.category.id = :categoryId OR :categoryId IS NULL) " +
             "AND (i.cost >= :costFrom OR :costFrom IS NULL) " +
             "AND (i.cost <= :costUpTo OR :costUpTo IS NULL) " +

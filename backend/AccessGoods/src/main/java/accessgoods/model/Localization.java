@@ -17,7 +17,8 @@ public class Localization {
 
     @Column(name = "location_longitude")
     private Double longitude;
-
     @Column(name = "location_latitude")
     private Double latitude;
+    @Column(name = "location_name")
+    private String name;
 }

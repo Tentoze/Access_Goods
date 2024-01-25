@@ -56,7 +56,7 @@ public class RentService extends CrudService<Long, Rent> {
 
     public List<String> getPossibleRentTimes(Long itemId) {
         List<Rent> rents = rentRepository.findByItem_IdAndReturnTimeAfter(itemId, LocalDate.now());
-
+        rents = rents.stream().filter(i -> i.getRentStatus() != RentStatus.TO_ACCEPT && i.getRentStatus() != RentStatus.CANCELLED).collect(Collectors.toList());
         List<String> rentedDates = rents.stream()
                 .flatMap(rent -> getDatesBetween(rent.getRentTime(), rent.getReturnTime()).stream())
                 .distinct()
