@@ -6,9 +6,10 @@ interface SuccessDialogProps {
     open: boolean;
     onClose: () => void;
     textOnSuccess: string;
+    titleSuccess?: string;
 }
 
-const SuccessDialog: React.FC<SuccessDialogProps> = ({ open, onClose, textOnSuccess }) => {
+const SuccessDialog: React.FC<SuccessDialogProps> = ({ open, onClose, textOnSuccess,titleSuccess }) => {
     const handleClose = () => {
         onClose();
     };
@@ -34,10 +35,10 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({ open, onClose, textOnSucc
                 >
                     <CloseIcon />
                 </IconButton>
-                <Typography variant="h2" color="primary" sx={{ textAlign: 'center' }}>
-                    Sukces
+                <Typography    variant="h3" color="primary" sx={{ textAlign: 'center' }}>
+                    {titleSuccess === undefined ? 'Sukces' : titleSuccess}
                 </Typography>
-                <Typography variant="h6" mt={2} sx={{ textAlign: 'center' }}>
+                <Typography style={{whiteSpace: 'pre-wrap'}} variant="h6" mt={2} sx={{ textAlign: 'center' }}>
                     {textOnSuccess}
                 </Typography>
             </Box>

@@ -1,5 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {Autocomplete, Box, Button, InputAdornment, TextField, Typography} from '@mui/material';
+import {
+    Autocomplete,
+    Box,
+    Button,
+    InputAdornment,
+    TextField,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography
+} from '@mui/material';
 import ItemWindow from "../components/molecules/ItemWindow";
 import Footer from "../components/molecules/Footer";
 import Header from "../components/molecules/Header";
@@ -11,7 +20,6 @@ import {addItem} from "../components/endpoints/Items";
 import {useNavigate} from "react-router";
 
 
-
 const RentNewItem = () => {
     const MAX_IMAGES = 5; // Maksymalna liczba zdjęć
 
@@ -21,6 +29,7 @@ const RentNewItem = () => {
     const [description, setDescription] = useState('');
     const [pricePerDay, setPricePerDay] = useState<number>();
     const [imageSrcs, setImageSrcs] = useState<string[]>(new Array(MAX_IMAGES).fill(''));
+    const [isActive, setIsActive] = useState<boolean>(true);
     const [errors, setErrors] = useState({
         name: '',
         description: '',
@@ -71,9 +80,8 @@ const RentNewItem = () => {
             return;
         }
 
-        const response = await addItem(name, description, pricePerDay, nonEmptyImages, category?.categoryId as number);
-        console.log(response)
-        if(response.status === 200) {
+        const response = await addItem(name, description, pricePerDay, nonEmptyImages, category?.categoryId as number, isActive);
+        if (response.status === 200) {
             navigate(`/item/${response.id}`)
         }
         return;
@@ -95,6 +103,9 @@ const RentNewItem = () => {
         return imageSrcs.map((src, index) => (
             <ImageUpload key={index} onImageSrc={(src) => handleImageSrc(index, src)}/>
         ));
+    };
+    const handleToggle = () => {
+        setIsActive((prevIsActive) => !prevIsActive);
     };
 
     return (
@@ -171,19 +182,28 @@ const RentNewItem = () => {
                     sx={{paddingBottom: '10px'}}
                     error={!!errors.description} helperText={errors.description}
                 />
-
-                <TextField
-                    label="Cena za dzień PLN"
-                    type="number"
-                    variant="outlined"
-                    value={pricePerDay}
-                    onChange={(e) => setPricePerDay(Number(e.target.value))}
-                    fullWidth
-                    required
-                    sx={{paddingBottom: '10px'}}
-                    error={!!errors.cost} helperText={errors.cost}
-                />
-
+                <Box sx={{flexDirection: 'row'}}>
+                    <TextField
+                        label="Cena za dzień PLN"
+                        type="number"
+                        variant="outlined"
+                        value={pricePerDay}
+                        onChange={(e) => setPricePerDay(Number(e.target.value))}
+                        fullWidth
+                        required
+                        sx={{paddingBottom: '10px', width: '300px'}}
+                        error={!!errors.cost} helperText={errors.cost}
+                    />
+                    <ToggleButtonGroup
+                        value={isActive ? 'active' : 'inactive'}
+                        exclusive
+                        onChange={handleToggle}
+                        sx={{paddingTop: '4px', paddingLeft: '4px'}}
+                    >
+                        <ToggleButton value="active">Aktywny</ToggleButton>
+                        <ToggleButton value="inactive">Nie aktywny</ToggleButton>
+                    </ToggleButtonGroup>
+                </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', paddingBottom: '8px'}}>
                     {renderImageUploads()}
                     <Typography variant="caption" color="error">{errors.images}</Typography>

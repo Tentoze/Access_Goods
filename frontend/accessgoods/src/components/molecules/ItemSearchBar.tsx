@@ -4,20 +4,40 @@ import {useNavigate} from 'react-router';
 import CategoryDto from "../atoms/CategoryDto";
 import {getCategories} from "../endpoints/Categories";
 import {useLocation} from "react-router-dom";
+import LocationAutocomplete from "./LocationAutocomplete";
 
-interface itemSearchBarProps{
-    handleSearchBar?: (searchTerm: string, categoryId?: number) => void
+interface itemSearchBarProps {
+    handleSearchBar?: (searchTerm: string, categoryId?: number, latitude?: number, longitude?: number, distanceInMeters?: number) => void
 }
+
 const ItemSearchBar = ({handleSearchBar}: itemSearchBarProps) => {
     const location = useLocation();
     const params = new URLSearchParams(location.search)
     const categoryIdFromParams = Number(params.get("categoryId"))
     const searchTermFromParams = params.get("searchTerm")
+    const longitudeFromParams = Number(params.get("longitude"))
+    const latitudeFromParams = Number(params.get("latitude"))
+    const rangeFromParams = Number(params.get("range"))
     const [searchTerm, setSearchTerm] = useState(searchTermFromParams === null ? '' : searchTermFromParams);
     const [categoryName, setCategoryName] = useState('')
     const [categoryNames, setCategoryNames] = useState<String[]>([])
     const [category, setCategory] = useState<CategoryDto | null>();
     const [categories, setCategories] = useState<CategoryDto[]>([]);
+    const [coordinates, setCoordinates] = useState<{
+        longitude: number,
+        latitude: number,
+        range: number
+    }| undefined>(() => {
+        if (!isNaN(longitudeFromParams) && !isNaN(latitudeFromParams) && !isNaN(rangeFromParams)) {
+            return {
+                longitude: longitudeFromParams,
+                latitude: latitudeFromParams,
+                range: rangeFromParams
+            };
+        }
+        return undefined;
+    });
+
     useEffect(() => {
         // Pobranie listy kategorii z backendu
         fetchCategories();
@@ -28,13 +48,11 @@ const ItemSearchBar = ({handleSearchBar}: itemSearchBarProps) => {
             const categories = await getCategories()
             setCategories(categories);
             setCategoryNames(categories.map(category => category.name));
-            console.log(categoryNames)
             const foundCategory = categories.find(category => category.categoryId === categoryIdFromParams);
             if (foundCategory) {
                 setCategory(foundCategory);
                 setCategoryName(foundCategory.name)
             }
-            console.log(foundCategory)
         } catch (e) {
             throw new Error("Exception during fetch categories")
         }
@@ -49,10 +67,20 @@ const ItemSearchBar = ({handleSearchBar}: itemSearchBarProps) => {
         if (searchTerm != null) {
             addressString = addressString + `searchTerm=${searchTerm}&`
         }
+        if (coordinates != null) {
+            addressString = `${addressString}latitude=${coordinates.latitude}&longitude=${coordinates.longitude}&range=${coordinates.range}&`
+        }
         navigate(`${addressString}`); // Przekierowanie do ścieżki /search
         if (handleSearchBar) {
-            handleSearchBar(searchTerm,category?.categoryId);
+            handleSearchBar(searchTerm, category?.categoryId, coordinates?.latitude, coordinates?.longitude, coordinates?.range === undefined ? undefined : coordinates!.range * 1000);
         }
+    };
+    const getAndSetCoordinates = (coordinatesFromAutocomplete: {
+        longitude: number,
+        latitude: number,
+        range: number
+    }) => {
+        setCoordinates(coordinatesFromAutocomplete);
     };
 
     return (
@@ -84,6 +112,9 @@ const ItemSearchBar = ({handleSearchBar}: itemSearchBarProps) => {
                 renderInput={(params) =>
                     <TextField {...params} label="Kategoria"/>}
             />
+            <LocationAutocomplete onSet={getAndSetCoordinates}
+                                  latLong={coordinates && coordinates.longitude && coordinates.latitude ? coordinates : undefined}
+                                  withRange={true}/>
             <Button variant="contained" onClick={handleSearch} size="medium">
                 Szukaj
             </Button>

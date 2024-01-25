@@ -20,17 +20,25 @@ export const getItem = async (itemId: number) => {
             images,
             name,
             cost,
-            rating,
+            avgRating,
             accountFirstName,
             accountLastName,
             accountImage,
             id,
             accountId,
             description,
-            categoryId
+            categoryId,
+            latitude,
+            longitude,
+            locationName,
+            active
         } = itemData;
-        console.log('beka XD',categoryId)
-        return new ItemDto(images, name, cost, rating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId);
+        return new ItemDto(images, name, cost, avgRating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId,
+            latitude,
+            longitude,
+            locationName,
+            active
+        )
     } catch (error) {
         throw new Error('Not found');
     }
@@ -42,7 +50,10 @@ export const register = async (
     firstName: string,
     lastName: string,
     phoneNumber: string,
-    photo: string
+    photo: string,
+    longitude: number,
+    latitude: number,
+    locationName: string
 ) => {
     try {
         const response = await Api.post('/register', {
@@ -51,7 +62,10 @@ export const register = async (
             firstName,
             lastName,
             phoneNumber,
-            photo
+            photo,
+            longitude,
+            latitude,
+            locationName
         });
         return response.status;
     } catch (error) {

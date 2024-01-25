@@ -1,5 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {Box, Button, Typography, TextField, Autocomplete, InputAdornment} from '@mui/material';
+import {
+    Box,
+    Button,
+    Typography,
+    TextField,
+    Autocomplete,
+    InputAdornment,
+    ToggleButtonGroup,
+    ToggleButton
+} from '@mui/material';
 import Header from "../components/molecules/Header";
 import Footer from "../components/molecules/Footer";
 import ItemDto from "../components/atoms/ItemDto";
@@ -8,7 +17,9 @@ import {addItem, editItem} from "../components/endpoints/Items";
 import {useNavigate} from "react-router";
 import CategoryDto from "../components/atoms/CategoryDto";
 import {getCategories} from "../components/endpoints/Categories";
-import ImageUpload from "../components/molecules/ImageUpload"; // Tutaj ścieżka do getItem
+import ImageUpload from "../components/molecules/ImageUpload";
+import {useParams} from "react-router-dom";
+import itemDto from "../components/atoms/ItemDto"; // Tutaj ścieżka do getItem
 const homeContentStyle = {
     display: 'flex',
     flexDirection: 'column',
@@ -18,10 +29,11 @@ const homeContentStyle = {
 const EditItem = () => {
     const MAX_IMAGES = 5;
     const [item, setItem] = useState<ItemDto>();
-    const itemId = 3; // Załóżmy, że identyfikator przedmiotu to 3
+    const {itemId} = useParams();
     const [category, setCategory] = useState<CategoryDto | null>();
     const [categories, setCategories] = useState<CategoryDto[]>([]);
-    const [imageSrcs,setImageSrcs] = useState<String[]>(new Array(MAX_IMAGES).fill(''))
+    const [imageSrcs, setImageSrcs] = useState<String[]>(new Array(MAX_IMAGES).fill(''))
+    const [isActive, setIsActive] = useState<boolean>(true);
     const [errors, setErrors] = useState({
         name: '',
         description: '',
@@ -36,10 +48,12 @@ const EditItem = () => {
             try {
                 const categoriesFound = await getCategories()
                 setCategories(categoriesFound)
-                const fetchedItem = await getItem(itemId);
+                const fetchedItem = await getItem(Number(itemId));
                 setItem(fetchedItem);
                 setCategory(categoriesFound.find(it => it.categoryId === fetchedItem.categoryId))
                 setImageSrcs(fetchedItem?.images ? fillImageSrcToMaxImages(fetchedItem.images.map(it => it.image)) : new Array(MAX_IMAGES).fill(''))
+                setIsActive(fetchedItem.isActive)
+                console.log(fetchedItem.isActive)
             } catch (error) {
                 console.error('Error fetching item:', error);
             }
@@ -65,55 +79,61 @@ const EditItem = () => {
         setImageSrcs(updatedImages);
     };
     const renderImageUploads = () => {
-        console.log(imageSrcs)
         return imageSrcs.map((src, index) => (
-            <ImageUpload key={index} onImageSrc={(src) => handleImageSrc(index, src)} currentImageSrc={src === '' ? undefined : (src as string)}/>
+            <ImageUpload key={index} onImageSrc={(src) => handleImageSrc(index, src)}
+                         currentImageSrc={src === '' ? undefined : (src as string)}/>
         ));
     };
 
     // Funkcja do obsługi aktualizacji przedmiotu
     const handleItemUpdate = async () => {
-                const nonEmptyImages = imageSrcs.filter(src => src !== '');
-                if (!item?.name) {
-                    setErrors(prevErrors => ({...prevErrors, name: 'Wypełnij pole nazwa'}));
-                } else {
-                    setErrors(prevErrors => ({...prevErrors, name: ''}));
-                }
+        const nonEmptyImages = imageSrcs.filter(src => src !== '');
+        if (!item?.name) {
+            setErrors(prevErrors => ({...prevErrors, name: 'Wypełnij pole nazwa'}));
+        } else {
+            setErrors(prevErrors => ({...prevErrors, name: ''}));
+        }
 
-                if (!item?.categoryId) {
-                    setErrors(prevErrors => ({...prevErrors, category: 'Wybierz kategorię'}));
-                } else {
-                    setErrors(prevErrors => ({...prevErrors, category: ''}));
-                }
+        if (!item?.categoryId) {
+            setErrors(prevErrors => ({...prevErrors, category: 'Wybierz kategorię'}));
+        } else {
+            setErrors(prevErrors => ({...prevErrors, category: ''}));
+        }
 
-                if (!item?.description) {
-                    setErrors(prevErrors => ({...prevErrors, description: 'Wypełnij pole opis'}));
-                } else {
-                    setErrors(prevErrors => ({...prevErrors, description: ''}));
-                }
+        if (!item?.description) {
+            setErrors(prevErrors => ({...prevErrors, description: 'Wypełnij pole opis'}));
+        } else {
+            setErrors(prevErrors => ({...prevErrors, description: ''}));
+        }
 
-                if (!item?.pricePerDay) {
-                    setErrors(prevErrors => ({...prevErrors, cost: 'Wypełnij pole cena za dzień'}));
-                } else {
-                    setErrors(prevErrors => ({...prevErrors, cost: ''}));
-                }
+        if (!item?.pricePerDay) {
+            setErrors(prevErrors => ({...prevErrors, cost: 'Wypełnij pole cena za dzień'}));
+        } else {
+            setErrors(prevErrors => ({...prevErrors, cost: ''}));
+        }
 
-                if (nonEmptyImages.length === 0) {
-                    setErrors(prevErrors => ({...prevErrors, images: 'Dodaj co najmniej jedno zdjęcie'}));
-                } else {
-                    setErrors(prevErrors => ({...prevErrors, images: ''}));
-                }
+        if (nonEmptyImages.length === 0) {
+            setErrors(prevErrors => ({...prevErrors, images: 'Dodaj co najmniej jedno zdjęcie'}));
+        } else {
+            setErrors(prevErrors => ({...prevErrors, images: ''}));
+        }
 
-                if (!item?.name || !item?.categoryId || !item?.description || !item?.pricePerDay || nonEmptyImages.length === 0) {
-                    return;
-                }
+        if (!item?.name || !item?.categoryId || !item?.description || !item?.pricePerDay || nonEmptyImages.length === 0) {
+            return;
+        }
 
-                const response = await editItem(item!);
-                console.log(response)
-                if(response.status === 200) {
-                    navigate(`/item/${response.id}`)
-                }
-                return;
+        const response = await editItem(item!);
+        if (response.status === 200) {
+            navigate(`/item/${response.id}`)
+        }
+        return;
+    };
+    const handleToggle = () => {
+        const newIsActive = !isActive;
+        console.log(newIsActive + "XDD")
+
+        setIsActive(newIsActive);
+        setItem((prevItem) => ({ ...prevItem!, isActive: newIsActive }));
     };
 
     return (
@@ -175,9 +195,9 @@ const EditItem = () => {
                                             setItem({...item, categoryId: selectedCategory.categoryId})
                                         }
                                     }
-                                }}                                renderInput={(params) =>
-                                    <TextField {...params} label="Kategoria" error={!!errors.category}
-                                               helperText={errors.category}/>}
+                                }} renderInput={(params) =>
+                                <TextField {...params} label="Kategoria" error={!!errors.category}
+                                           helperText={errors.category}/>}
                             />
 
                             <TextField
@@ -186,7 +206,7 @@ const EditItem = () => {
                                 rows={5}
                                 variant="outlined"
                                 value={item.description}
-                                onChange={(e) => setItem({ ...item, description: e.target.value })}
+                                onChange={(e) => setItem({...item, description: e.target.value})}
                                 fullWidth
                                 required
                                 inputProps={{maxLength: 300}}
@@ -202,18 +222,28 @@ const EditItem = () => {
                                 sx={{paddingBottom: '10px'}}
                                 error={!!errors.description} helperText={errors.description}
                             />
-
-                            <TextField
-                                label="Cena za dzień PLN"
-                                type="number"
-                                variant="outlined"
-                                value={item.pricePerDay || ''}
-                                onChange={(e) => setItem({ ...item, pricePerDay: Number(e.target.value) })}
-                                fullWidth
-                                required
-                                sx={{paddingBottom: '10px'}}
-                                error={!!errors.cost} helperText={errors.cost}
-                            />
+                            <Box sx={{flexDirection:'row'}}>
+                                <TextField
+                                    label="Cena za dzień PLN"
+                                    type="number"
+                                    variant="outlined"
+                                    value={item.pricePerDay || ''}
+                                    onChange={(e) => setItem({...item, pricePerDay: Number(e.target.value)})}
+                                    fullWidth
+                                    required
+                                    sx={{paddingBottom: '10px',width: '300px'}}
+                                    error={!!errors.cost} helperText={errors.cost}
+                                />
+                                <ToggleButtonGroup
+                                    value={isActive ? 'active' : 'inactive'}
+                                    exclusive
+                                    onChange={handleToggle}
+                                    sx={{paddingTop: '4px', paddingLeft: '4px'}}
+                                >
+                                    <ToggleButton value="active">Aktywny</ToggleButton>
+                                    <ToggleButton value="inactive">Nie aktywny</ToggleButton>
+                                </ToggleButtonGroup>
+                            </Box>
                             <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', paddingBottom: '8px'}}>
                                 {renderImageUploads()}
                                 <Typography variant="caption" color="error">{errors.images}</Typography>

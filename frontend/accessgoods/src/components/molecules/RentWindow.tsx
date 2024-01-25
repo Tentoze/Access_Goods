@@ -1,11 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import {Autocomplete, Avatar, Box, Button, Container, Menu, MenuItem, TextField, Typography} from '@mui/material';
+import {
+    Autocomplete,
+    Avatar,
+    Box,
+    Button,
+    Container,
+    Menu,
+    MenuItem,
+    Rating,
+    TextField,
+    Typography
+} from '@mui/material';
 import {useNavigate} from "react-router";
 import {getAccount} from "../endpoints/Accounts";
 import {changeRentStatus, getChangeStatusPossibilities} from "../endpoints/Rents";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {Link} from "react-router-dom";
 import SuccessDialog from "./SuccessDialog";
+import AddOrEditOpinionDialog from "./AddOrEditOpinionDialog";
+import {getOpinionForSpecificUserAndFeedbackTarget} from "../endpoints/Opinions";
 
 
 interface rentWindowProps {
@@ -23,14 +36,47 @@ interface rentWindowProps {
     }
 }
 
+const mapStatusToPolish = (status: string): string => {
+    const statusMap: Record<string, string> = {
+        TO_ACCEPT: 'Do akceptacji',
+        IN_RENT: 'W wynajmie',
+        CLOSED: 'Zamknięte',
+        ACCEPTED: 'Zaakceptowane',
+        CANCELLED: 'Anulowane',
+        // Dodaj inne statusy, jeśli są dostępne
+    };
+
+    return statusMap[status] || status;
+};
+
+const mapPolishToStatus = (polishStatus: string): string => {
+    const statusMap: Record<string, string> = {
+        'Do akceptacji': 'TO_ACCEPT',
+        'W wynajmie': 'IN_RENT',
+        'Zamknięte': 'CLOSED',
+        'Zaakceptowane': 'ACCEPTED',
+        'Anulowane': 'CANCELLED',
+        // Dodaj inne statusy, jeśli są dostępne
+    };
+
+    return statusMap[polishStatus] || polishStatus;
+};
+
 const RentWindow = ({rentDto}: rentWindowProps) => {
     // Stan do przechowywania informacji o użytkowniku
     const [currentAccountId, setCurrentAccountId] = useState<Number>();
     const [userDetails, setUserDetails] = useState<any>(null);
     const [statusMenuAnchorEl, setStatusMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [statusOptions, setStatusOptions] = useState<string[]>([]);
-    const [rentStatus, setRentStatus] = useState<string>(rentDto.rentStatus);
+    const [rentStatus, setRentStatus] = useState<string>(
+        mapStatusToPolish(rentDto.rentStatus)
+    );
     const [successMessage, setSuccessMessage] = useState(false);
+    const [rating, setRating] = useState<number | null>(0);
+    const [isAddOpinionDialogOpen, setAddOpinionDialogOpen] = useState(false);
+    const [feedbackTarget, setFeedbackTarget] = useState<string>()
+    const [opinion, setOpinion] = useState<{ id: number, rating: number, description: string } | undefined>(undefined)
+
 
     const navigate = useNavigate();
 
@@ -42,14 +88,27 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
             } else {
                 navigate("/")
             }
+            const feedback = Number(accountId) === rentDto.lendingAccountId ? "LENDER" : "BORROWER";
+            setFeedbackTarget(feedback);
             if (Number(accountId) === rentDto.lendingAccountId) {
-                console.log(rentDto.borrowingAccountId)
                 setUserDetails(await getAccount(rentDto.borrowingAccountId));
-                setStatusOptions(await getChangeStatusPossibilities(rentDto.itemId))
+                setStatusOptions((await getChangeStatusPossibilities(rentDto.itemId)).map((status) => mapStatusToPolish(status)))
+                try {
+                    const data = await getOpinionForSpecificUserAndFeedbackTarget(rentDto.borrowingAccountId, feedback)
+                    setOpinion(data);
+                    setRating(data.rating);
+                } catch (exception) {
+                    return
+                }
             } else {
-                console.log(rentDto.lendingAccountId)
-
                 setUserDetails(await getAccount(rentDto.lendingAccountId));
+                try {
+                    const data = await getOpinionForSpecificUserAndFeedbackTarget(rentDto.lendingAccountId, feedback)
+                    setOpinion(data);
+                    setRating(data.rating);
+                } catch (exception) {
+                    return
+                }
             }
         } catch (e) {
             console.log(e)
@@ -61,9 +120,11 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
 
     };
     const setStatus = async () => {
-        const responseStatus = await changeRentStatus(rentDto.id, rentStatus)
+        const englishStatus = mapPolishToStatus(rentStatus);
+        const responseStatus = await changeRentStatus(rentDto.id, englishStatus);
         if (responseStatus === 200) {
-            return
+            setSuccessMessage(true);
+            setStatusOptions((await getChangeStatusPossibilities(rentDto.itemId)).map((status) => mapStatusToPolish(status)))
         }
     };
 
@@ -73,14 +134,26 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
 
     const handleStatusChange = (status: string) => {
         setRentStatus(status)
-
         // Zamknięcie menu
         handleStatusMenuClose();
     };
 
+    const handleAddOpinionDialogClose = () => {
+        // Zamknij AddOrEditOpinionDialog
+        setAddOpinionDialogOpen(false);
+    };
+
+    const handleRatingChange = (event: React.ChangeEvent<{}>, newValue: number | null) => {
+        if(newValue !== 0 && newValue !== null){
+            setRating(newValue);
+        }
+        // Otwórz AddOrEditOpinionDialog po zmianie oceny
+        setAddOpinionDialogOpen(true);
+    };
+
     const handleCloseSnackbar = () => {
         setSuccessMessage(false);
-        navigate('/')
+        rentDto.rentStatus = rentStatus;
     };
 
     useEffect(
@@ -116,30 +189,59 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
             <Box sx={{flexGrow: 1}}>
                 <Typography variant="h6">{rentDto.itemName}</Typography>
                 {userDetails && (
-
-                    <Box
-                        sx={{
+                    <Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                float: 'left'
+                            }}
+                        >
+                            <Link to={`/account/${(userDetails.id)}`} style={{textDecoration: 'none', color: 'black'}}>
+                                <Avatar
+                                    alt={`${userDetails.firstName} ${userDetails.lastName}`}
+                                    src={userDetails.photo}
+                                    sx={{width: 32, height: 32, mr: 1, float: 'left'}}
+                                />
+                                <Typography sx={{textDecoration: 'none', float: 'left', paddingTop: '4px'}}>
+                                    {userDetails.firstName} {userDetails.lastName}
+                                </Typography>
+                            </Link>
+                        </Box>
+                        <Box sx={{
                             display: 'flex',
                             alignItems: 'center',
-
-                        }}
-                    >
-                        <Link to={`/account/${(userDetails.id)}`} style={{textDecoration: 'none', color: 'black'}}>
-                            <Avatar
-                                alt={`${userDetails.firstName} ${userDetails.lastName}`}
-                                src={userDetails.photo}
-                                sx={{width: 32, height: 32, mr: 1, float: 'left'}}
+                            float: 'right'
+                        }}>
+                            <Rating
+                                name="rating"
+                                value={rating}
+                                onChange={handleRatingChange}
                             />
-                            <Typography sx={{textDecoration: 'none', float: 'left', paddingTop: '4px'}}>
-                                {userDetails.firstName} {userDetails.lastName}
-                            </Typography>
-                        </Link>
 
+                            {/* DodajOpinieDialog otwiera się po zmianie oceny */}
+                            {isAddOpinionDialogOpen && (
+                                <AddOrEditOpinionDialog
+                                    open={isAddOpinionDialogOpen}
+                                    onClose={handleAddOpinionDialogClose}
+                                    baseRating={rating === null ? undefined : rating}
+                                    accountName={userDetails.firstName + " " + userDetails.lastName}
+                                    feedbackTarget={feedbackTarget!}
+                                    opinionReceiverAccountId={userDetails.id}
+                                    opinionGiverAccountId={currentAccountId! as number}
+                                    opinionId={opinion?.id}
+                                    description={opinion?.description}
+                                />
+                            )}
+                        </Box>
                     </Box>
                 )}
-                <Box sx={{marginBottom: '5px'}}>
+
+                <br/>
+                <br/>
+                <Box sx={{marginBottom: '5px', float: 'left'}}>
                     <Typography sx={{float: 'left', marginRight: '5px'}}>Aktualny status: </Typography>
-                    {userDetails && currentAccountId === rentDto.lendingAccountId ? (
+                    {userDetails && currentAccountId === rentDto.lendingAccountId && !(rentDto.rentStatus === "CLOSED" || rentDto.rentStatus === "CANCELLED") ? (
                         <Box sx={{float: 'left'}}>
                             <Button sx={{height: '1.5rem', marginTop: '-3px', paddingLeft: '8px', paddingRight: '8px'}}
                                     variant="contained"
@@ -164,7 +266,6 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
                                         <Button sx={{
                                             float: 'right',
                                             height: '1.5rem',
-
                                             paddingLeft: '8px',
                                             paddingRight: '8px'
                                         }} variant="contained" onClick={setStatus}>
@@ -173,19 +274,22 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
                                     : (<div></div>)}
                             </Box>
                         </Box>
-                    ) : rentDto.rentStatus}
+                    ) : <Typography sx={{float: 'left'}}>{rentStatus}</Typography>}
                 </Box>
                 <br/>
-                <Typography sx={{float: 'left'}}>Cena rezerwacji: {rentDto.totalCost} PLN</Typography>
-                <Typography sx={{float: 'left'}}>Data rezerwacji
-                    od: <b>{rentDto.rentTime} </b> do: <b>{rentDto.returnTime}</b></Typography>
+                <Box sx={{marginTop: '8.5px'}}>
+                    <Typography sx={{float: ''}}>Cena rezerwacji: {rentDto.totalCost} PLN</Typography>
+                    <Typography sx={{float: ''}}>Data rezerwacji
+                        od: <b>{rentDto.rentTime} </b> do: <b>{rentDto.returnTime}</b></Typography>
+                </Box>
             </Box>
-            <div>    <SuccessDialog open={successMessage} onClose={handleCloseSnackbar} textOnSuccess={"Udało sie zmienic status"}/>
+            <div><SuccessDialog open={successMessage} onClose={handleCloseSnackbar}
+                                textOnSuccess={"Udało sie zmienic status"}/>
             </div>
         </Box>
 
 
-);
+    );
 };
 
 export default RentWindow;

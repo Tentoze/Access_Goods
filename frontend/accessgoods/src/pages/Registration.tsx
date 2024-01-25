@@ -7,6 +7,7 @@ import Footer from "../components/molecules/Footer";
 import {useNavigate} from "react-router";
 import SuccessDialog from "../components/molecules/SuccessDialog";
 import {register} from "../components/endpoints/endpoints";
+import LocationAutocomplete from "../components/molecules/LocationAutocomplete";
 
 // ... (Komponent ImageUpload)
 const homeContentStyle = {
@@ -25,16 +26,37 @@ const Registration = () => {
     const [location, setLocation] = useState('');
     const [imageSrc, setImageSrc] = useState<string>('');
     const [successMessage, setSuccessMessage] = useState(false);
+    const [coordinates, setCoordinates] = useState<{
+        longitude: number,
+        latitude: number,
+        address: string
+    }| undefined>();
 
-
+    const getAndSetCoordinates = (coordinatesFromAutocomplete: {
+        longitude: number,
+        latitude: number,
+        range: number
+    }) => {
+        setCoordinates({longitude: coordinatesFromAutocomplete.longitude,
+        latitude: coordinatesFromAutocomplete.latitude,address: ''});
+    };
+    const getAndSetAddress = (address: string) => {
+        setCoordinates((prevCoordinates) =>
+            prevCoordinates
+                ? { ...prevCoordinates, address: address }
+                : undefined
+        );
+    };
 
     const [errors, setErrors] = useState({
         email: '',
         password: '',
+        location: '',
         // ... inne pola z błędami
     });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
         e.preventDefault()
         // Walidacja (przykład)
         if (!email.includes('@')) {
@@ -42,18 +64,27 @@ const Registration = () => {
                 ...prevErrors,
                 email: 'Niepoprawny format adresu email',
             }));
+            console.log(coordinates)
             return;
         }
-        console.log(password.length, /\d/.test(password));
         if (password.length < 8 || !/\d/.test(password)) {
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 password: 'Hasło powinno zawierać przynajmniej 8 znaków, w tym 1 cyfrę',
             }));
+            console.log(coordinates)
+            return;
+        }
+        if(coordinates === undefined || coordinates.latitude === undefined || coordinates.longitude === undefined){
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                location: 'Lokalizacja musi być uzupełniona',
+            }));
+            console.log(coordinates)
             return;
         }
 
-        const response = await register(email, password, firstName, lastName, phone, imageSrc)
+        const response = await register(email, password, firstName, lastName, phone, imageSrc,coordinates!.longitude,coordinates!.latitude, coordinates!.address)
         if (response === 200) {
             setSuccessMessage(true);
         } else {
@@ -135,15 +166,7 @@ const Registration = () => {
                             onChange={(e) => setPhone(e.target.value)}
                             fullWidth
                         />
-                        <TextField
-                            sx={{paddingBottom:'6px'}}
-                            label="Lokalizacja"
-                            variant="outlined"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            fullWidth
-                            required
-                        />
+                        <LocationAutocomplete onSet={getAndSetCoordinates} withRange={false} setAddressOnSelect={getAndSetAddress}  error={errors.location} />
                         <Typography variant="h6" > Zdjęcie: </Typography>
                         {/* Komponent do dodawania zdjęć */}
                         <Box  sx={{marginTop:'-35px',marginLeft: '100px', textAlign: 'center' }}>

@@ -10,6 +10,7 @@ import RentNewItem from "./pages/RentNewItem";
 import MyItems from "./pages/MyItems";
 import EditItem from "./pages/EditItem";
 import MyRents from "./pages/MyRents";
+import Account from "./pages/Account";
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="/my-items" Component={MyItems}/>
                 <Route path="/edit-item/:itemId" Component={EditItem}/>
                 <Route path="/my-rents" Component={MyRents}/>
+                <Route path="/account/:accountId" Component={Account}/>
             </Routes>
         </Router>
     );

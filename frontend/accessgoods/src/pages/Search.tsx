@@ -28,6 +28,9 @@ type Filters = Partial<{
     verifiedUser: boolean;
     userHasPhoto: boolean;
     deliveryType: string;
+    longitude: number;
+    latitude: number;
+    distanceInMeters: number;
 }>;
 
 const baseFilter: Filters = {
@@ -45,11 +48,17 @@ const Search = () => {
         borderRadius: '5px',
         marginBottom: '16px',
     };
+    const buttonStyle = {
+        top: 0,
+        position: 'sticky',
+        border: '1px solid #ccc',
+        marginBottom: '16px',
+    };
     const paperPanelStyle = {
         display: 'static',
         top: 0,
         position: 'sticky',
-        marginTop: '-4vh',
+        marginTop: '',
     };
 
     const centeredContentStyle = {
@@ -85,7 +94,6 @@ const Search = () => {
         console.log("Filters applied:", data);
 
         try {
-            console.log(data.priceFrom)
             const result = await searchItem(data); // Oczekiwanie na zwrotkę z endpointu
             setItems(result); // Aktualizacja stanu items po otrzymaniu wyniku
         } catch (error) {
@@ -94,20 +102,19 @@ const Search = () => {
         }
         return
     };
-    const handleSearchBar = async (searchTerm: string, categoryid?: number) => {
+    const handleSearchBar = async (searchTerm: string, categoryid?: number, latitude?: number, longitude?: number, distanceInMeters?: number) => {
         try {
-            const data = filtersData;
+            const data = { ...filtersData };
             if (searchTerm !== null) {
                 if (searchTerm === "") {
                     data!.searchTerm = undefined;
                 }
                 data!.searchTerm = searchTerm
             }
-            if (categoryid !== null) {
-                data!.categoryId = categoryid;
-            } else {
-                data!.categoryId = undefined;
-            }
+            data.categoryId = categoryid || undefined;
+            data.latitude = latitude || undefined;
+            data.longitude = longitude || undefined;
+            data.distanceInMeters = distanceInMeters || undefined;
             setFiltersData(data);
             console.log("Filters applied:", data);
             const result = await searchItem(data); // Oczekiwanie na zwrotkę z endpointu
@@ -126,10 +133,20 @@ const Search = () => {
             <Grid container sx={{paddingBottom: '60px', marginBottom: '6px'}}>
                 {
                     <Grid item xs={3 && showFilters}>
+                        {!showFilters ?
+                            <Paper sx={buttonStyle}>
+                                <IconButton onClick={toggleFilters}>
+                                    {showFilters ? <KeyboardDoubleArrowLeftIcon/> : <KeyboardDoubleArrowRightIcon/>}
+                                </IconButton>
+                            </Paper> : <div></div>
+                        }
                         <Paper sx={paperPanelStyle}>
-                            <IconButton onClick={toggleFilters}>
+                            {showFilters ?
+                            <IconButton onClick={toggleFilters} sx={{position: 'sticky',
+                                border: '1px solid #ccc',borderRadius: '2px',}}>
                                 {showFilters ? <KeyboardDoubleArrowLeftIcon/> : <KeyboardDoubleArrowRightIcon/>}
-                            </IconButton>
+                            </IconButton> : <div></div>
+                            }
                             {showFilters && (
                                 <Box sx={filterPanelStyle}>
                                     <Typography variant="h6" gutterBottom>
@@ -140,6 +157,7 @@ const Search = () => {
                             )
                             }
                         </Paper>
+
                     </Grid>
                 }
                 {/* Zawartość wyszukiwania */}

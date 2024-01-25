@@ -12,7 +12,8 @@ export const addItem = async (
     description: string,
     cost: number,
     images: string[],
-    categoryId: number
+    categoryId: number,
+    active: boolean
 ): Promise<AddItemResposne> => {
     try {
         const response = await Api.post('/items/add', {
@@ -20,7 +21,8 @@ export const addItem = async (
             description,
             cost,
             images,
-            categoryId
+            categoryId,
+            active,
         }, {
             headers: {Authorization: getAuthorizationHeader()}
         });
@@ -39,7 +41,8 @@ export const editItem = async (itemDto: ItemDto) => {
             description: itemDto.description,
             cost: itemDto.pricePerDay,
             images: itemDto.images,
-            categoryId: itemDto.categoryId
+            categoryId: itemDto.categoryId,
+            active: itemDto.isActive
         }, {
             headers: {Authorization: getAuthorizationHeader()}
         });
@@ -61,11 +64,15 @@ type Filters = {
     verifiedUser: boolean;
     userHasPhoto: boolean;
     deliveryType: string;
+    longitude: number;
+    latitude: number;
+    distanceInMeters: number;
+
 };
 
 export const searchItem = async (filters: Partial<Filters> | null) => {
     try {
-        const response = await Api.get('/items/search',  {
+        const response = await Api.get('/items/search', {
             params: filters
         });
         const itemDataList = response.data;
@@ -75,16 +82,25 @@ export const searchItem = async (filters: Partial<Filters> | null) => {
                 images,
                 name,
                 cost,
-                rating,
+                avgRating,
                 accountFirstName,
                 accountLastName,
                 accountImage,
                 id,
                 accountId,
                 description,
-                categoryId
+                categoryId,
+                latitude,
+                longitude,
+                locationName,
+                active
             } = itemData;
-            return new ItemDto(images, name, cost, rating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId);
+            return new ItemDto(images, name, cost, avgRating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId,
+                latitude,
+                longitude,
+                locationName,
+                active
+            )
         });
         return itemList;
 
@@ -94,7 +110,7 @@ export const searchItem = async (filters: Partial<Filters> | null) => {
 };
 export const getMyItems = async () => {
     try {
-        const response = await Api.get('/items/showMyItems',  {
+        const response = await Api.get('/items/showMyItems', {
             headers: {Authorization: getAuthorizationHeader()}
         });
         const itemDataList = response.data;
@@ -104,16 +120,61 @@ export const getMyItems = async () => {
                 images,
                 name,
                 cost,
-                rating,
+                avgRating,
                 accountFirstName,
                 accountLastName,
                 accountImage,
                 id,
                 accountId,
                 description,
-                categoryId
+                categoryId,
+                latitude,
+                longitude,
+                locationName,
+                active
             } = itemData;
-            return new ItemDto(images, name, cost, rating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId);
+            return new ItemDto(images, name, cost, avgRating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId,
+                latitude,
+                longitude,
+                locationName,
+                active
+            )
+        });
+        return itemList;
+    } catch (error) {
+        throw error;
+    }
+};
+export const getUserItems = async (accountId: Number) => {
+    try {
+        const response = await Api.get(`/items/byAccount/${accountId}`, {
+        });
+        const itemDataList = response.data;
+
+        const itemList: ItemDto[] = itemDataList.map((itemData: any) => {
+            const {
+                images,
+                name,
+                cost,
+                avgRating,
+                accountFirstName,
+                accountLastName,
+                accountImage,
+                id,
+                accountId,
+                description,
+                categoryId,
+                latitude,
+                longitude,
+                locationName,
+                active
+            } = itemData;
+            return new ItemDto(images, name, cost, avgRating, accountFirstName, accountLastName, accountImage, id, accountId, description, categoryId,
+                latitude,
+                longitude,
+                locationName,
+                active
+            )
         });
         return itemList;
     } catch (error) {
