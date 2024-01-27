@@ -89,7 +89,7 @@ public class RentService extends CrudService<Long, Rent> {
             throw new IllegalStateException("You cannot rent your item");
         }
         rent.setBorrowingAccount(borrowingAccount);
-        rent.setTotalCost(ChronoUnit.DAYS.between(rent.getRentTime(), rent.getReturnTime()) * item.getCost());
+        rent.setTotalCost((ChronoUnit.DAYS.between(rent.getRentTime(), rent.getReturnTime()) + 1) * item.getCost());
         rent.setRentStatus(RentStatus.TO_ACCEPT);
         return create(rent);
     }

@@ -4,6 +4,7 @@ import accessgoods.model.Account;
 import accessgoods.model.AccountDetails;
 import accessgoods.model.Localization;
 import accessgoods.model.Role;
+import accessgoods.model.dto.AccountPostDto;
 import accessgoods.model.dto.RegistrationDto;
 import accessgoods.model.dto.SignInDto;
 import accessgoods.repository.AccountRepository;
@@ -33,6 +34,8 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final AuthenticationManager authenticationManager;
+    @Autowired
+    private final AccountDetailsService accountDetailsService;
     private final JwtEncoder jwtEncoder;
     @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -117,13 +120,44 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Account updateAccount(AccountPostDto accountPostDto, Long accountId) {
+        Account account = accountDetailsService.getCurrentUser();
+        if (account.getId().equals(accountId)) {
+            if (RegistrationDto.validateEmail(accountPostDto.getEmail())) {
+                if (accountRepository.findByEmail(accountPostDto.getEmail()).isEmpty()) {
+                    account.setEmail(accountPostDto.getEmail());
+                    account.setFirstName(accountPostDto.getFirstName());
+                    account.setLastName(accountPostDto.getLastName());
+                    account.setPhoneNumber(accountPostDto.getPhoneNumber());
+                    account.setPhoto(accountPostDto.getPhoto());
+                    account.setLocalization(new Localization(accountPostDto.getLongitude(), accountPostDto.getLatitude(), accountPostDto.getLocationName()));
+                    account.setModifiedAt(LocalDateTime.now());
+                    return accountRepository.save(account);
+                } else {
+                    throw new IllegalStateException("Email is already taken.");
+                }
+            } else {
+                throw new IllegalStateException("Wrong email.");
+            }
+        } else {
+            throw new IllegalStateException("You can't change other users data");
+        }
+    }
+
+    @Override
     @Transactional
-    public void changePass(String email, String hashedPass) {
+    public void changePass(String email, String oldPassword, String newPassword) {
         Account client = accountRepository.findByEmail(email)
                 .orElseThrow(IllegalStateException::new);
-        client.setPassword(hashedPass);
-        client.setModifiedAt(LocalDateTime.now());
-        accountRepository.save(client);
+        String hashedOldPassword = bCryptPasswordEncoder.encode(oldPassword);
+        if (hashedOldPassword.equals(client.getPassword())) {
+            client.setPassword(bCryptPasswordEncoder.encode(newPassword));
+            client.setModifiedAt(LocalDateTime.now());
+            accountRepository.save(client);
+        } else {
+            throw new IllegalStateException("Old password is incorrect");
+        }
+
     }
 
     @Transactional

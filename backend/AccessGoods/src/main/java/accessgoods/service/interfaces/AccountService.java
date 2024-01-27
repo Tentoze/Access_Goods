@@ -5,6 +5,7 @@ package accessgoods.service.interfaces;
 import accessgoods.model.Account;
 import accessgoods.model.AccountDetails;
 import accessgoods.model.Role;
+import accessgoods.model.dto.AccountPostDto;
 import accessgoods.model.dto.RegistrationDto;
 import accessgoods.model.dto.SignInDto;
 
@@ -21,7 +22,7 @@ public interface AccountService {
 
     String generateJwtToken(AccountDetails clientDetails, String password);
 
-    void changePass(String username, String hashedPass);
+    void changePass(String email, String oldPassword, String newPassword);
 
     void archive(String username);
 
@@ -36,4 +37,5 @@ public interface AccountService {
     Long register(RegistrationDto registrationForm);
 
     Long deleteUser(Long accountId);
+    Account updateAccount(AccountPostDto accountPostDto, Long accountId);
 }

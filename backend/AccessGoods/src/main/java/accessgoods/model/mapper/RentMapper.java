@@ -24,7 +24,7 @@ public interface RentMapper extends MapperBase<Rent, RentDto, RentPostDto> {
                 .itemPhoto(rent.getItem().getImages() != null ? rent.getItem().getImages().get(0).getImage() : "")
                 .borrowingAccountId(rent.getBorrowingAccount().getId())
                 .lendingAccountId(rent.getLendingAccount().getId())
-                .itemId(rent.getId())
+                .itemId(rent.getItem().getId())
                 .totalCost(rent.getTotalCost())
                 .returnTime(rent.getReturnTime().toString())
                 .build();

@@ -4,6 +4,7 @@ package accessgoods.controllers;
 import accessgoods.model.Account;
 import accessgoods.model.Role;
 import accessgoods.model.dto.AccountDto;
+import accessgoods.model.dto.AccountPostDto;
 import accessgoods.model.mapper.AccountMapper;
 import accessgoods.service.interfaces.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -87,6 +88,17 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
+    @PutMapping("/update/{accountId}")
+    @PreAuthorize("hasAuthority('SCOPE_CLIENT')")
+    public ResponseEntity<Object> updateAccountData(@RequestBody AccountPostDto accountPostDto, @PathVariable Long accountId) {
+        try {
+            accountService.updateAccount(accountPostDto, accountId);
+            return ResponseEntity.ok("Role changed");
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
+
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     @GetMapping("/archived-clients")
