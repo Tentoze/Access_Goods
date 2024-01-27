@@ -18,6 +18,7 @@ const Login: React.FC<LoginProps> = ({open, onClose}) => {
             localStorage.setItem("jwtToken", response.data.autorizationToken);
             localStorage.setItem("accountId",response.data.id);
             onClose(); // Zamknij okno logowania po sukcesie
+            window.location.reload();
         } catch (error: any) {
             if (error.response.status === 401) {
                 setError('Błędne hasło');

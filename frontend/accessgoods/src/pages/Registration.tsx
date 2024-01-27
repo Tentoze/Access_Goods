@@ -23,7 +23,6 @@ const Registration = () => {
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
-    const [location, setLocation] = useState('');
     const [imageSrc, setImageSrc] = useState<string>('');
     const [successMessage, setSuccessMessage] = useState(false);
     const [coordinates, setCoordinates] = useState<{
@@ -52,6 +51,7 @@ const Registration = () => {
         email: '',
         password: '',
         location: '',
+        phoneNumber: '',
         // ... inne pola z błędami
     });
 
@@ -64,7 +64,6 @@ const Registration = () => {
                 ...prevErrors,
                 email: 'Niepoprawny format adresu email',
             }));
-            console.log(coordinates)
             return;
         }
         if (password.length < 8 || !/\d/.test(password)) {
@@ -72,7 +71,6 @@ const Registration = () => {
                 ...prevErrors,
                 password: 'Hasło powinno zawierać przynajmniej 8 znaków, w tym 1 cyfrę',
             }));
-            console.log(coordinates)
             return;
         }
         if(coordinates === undefined || coordinates.latitude === undefined || coordinates.longitude === undefined){
@@ -80,7 +78,13 @@ const Registration = () => {
                 ...prevErrors,
                 location: 'Lokalizacja musi być uzupełniona',
             }));
-            console.log(coordinates)
+            return;
+        }
+        if (isNaN(Number(phone)) || phone.length !== 9) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                phoneNumber: 'Numer telefonu musi składać się z 9 cyfr',
+            }));
             return;
         }
 
@@ -91,12 +95,6 @@ const Registration = () => {
 
         }
         return;
-        // Tu możesz użyć fetch lub biblioteki do wywołania backendu
-        // fetch('URL_DO_BACKENDU', {
-        //   method: 'POST',
-        //   body: formData,
-        // });
-
     };
     const handleImageSrc = (src: string) => {
         setImageSrc(src);

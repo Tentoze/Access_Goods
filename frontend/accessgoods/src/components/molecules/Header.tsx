@@ -39,6 +39,10 @@ const Header = () => {
         handleClose()
         navigate('/my-rents')
     }
+    const myChats = () => {
+        handleClose()
+        navigate('/my-chats')
+    }
     const goToCurrentRents = () => {
         handleClose();
     };
@@ -64,6 +68,13 @@ const Header = () => {
             color: '#2196f3', // Kolor tekstu po najechaniu myszką
         },
     };
+
+    function myAccount() {
+        handleClose()
+        navigate(`/account/${Number(localStorage.getItem('accountId'))}`)
+        window.location.reload();
+    }
+
     return (
 
         <AppBar position="static" >
@@ -94,7 +105,8 @@ const Header = () => {
                             <MenuItem onClick={rentNewItem}>Wystaw przedmiot</MenuItem>
                             <MenuItem onClick={myItems}>Moje Przedmioty</MenuItem>
                             <MenuItem onClick={myRents}>Moje Wypożyczenia</MenuItem>
-                            <MenuItem onClick={handleClose}>Ustawienia</MenuItem>
+                            <MenuItem onClick={myChats}>Moje Wiadomości</MenuItem>
+                            <MenuItem onClick={myAccount}>Mój profil</MenuItem>
                         </Menu>
                     </div>
                 )}

@@ -3,6 +3,8 @@ import {Paper, Avatar, Typography, Box, Rating} from '@mui/material';
 import {deepOrange} from '@mui/material/colors';
 import {getAccount} from "../endpoints/Accounts";
 import {addOpinion} from "../endpoints/Opinions";
+import {Link} from "react-router-dom";
+import {useNavigate} from "react-router";
 
 interface OpinionWindowProps {
     opinion: {
@@ -22,6 +24,11 @@ const OpinionWindow: React.FC<OpinionWindowProps> = ({opinion}) => {
     const fetchUserOpinionDetails = async () => {
         setUserDetails(await getAccount(opinion.opinionGiverAccountId));
     };
+    const navigate = useNavigate()
+    function myAccount() {
+        navigate(`/account/${(userDetails.id)}`)
+        window.location.reload();
+    }
 
     useEffect(
         () => {
@@ -34,9 +41,12 @@ const OpinionWindow: React.FC<OpinionWindowProps> = ({opinion}) => {
             <Box sx={{paddingBottom:'4px'}}>
             {userDetails &&
                 <Box sx={{paddingBottom:'4px'}}>
-                    <Avatar src={userDetails.photo} sx={{float: 'left', bgcolor: deepOrange[500], marginRight: 2}}/>
+                    <Link to={`/account/${(userDetails.id)}`} onClick={myAccount}
+                          style={{textDecoration: 'none', color: 'black'}}>
+                    <Avatar  src={userDetails.photo} sx={{float: 'left', bgcolor: deepOrange[500], marginRight: 2}}/>
                     <Typography sx={{float: 'left'}}
                                 variant="body1"> {userDetails.firstName} {userDetails.lastName}</Typography>
+                    </Link>
                 </Box>
 
             }

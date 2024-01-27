@@ -11,6 +11,7 @@ import ItemDto from "../components/atoms/ItemDto";
 import {getOpinionsByAccountId} from "../components/endpoints/Opinions";
 import OpinionWindow from "../components/molecules/OpinionWindow";
 import SuccessDialog from "../components/molecules/SuccessDialog";
+import EditAccountDataDialog from "../components/molecules/EditAccountDataDialog";
 
 const homeContentStyle = {
     display: 'flex',
@@ -31,6 +32,8 @@ const Account = () => {
         opinionReceiverAccountId: number,
         feedbackTarget: string,
     }[]>([]);
+    const [isEditAccountDataDialogOpen, setIsEditAccountDataDialogOpen] = useState(false);
+
 
     useEffect(() => {
         fetchAccountData();
@@ -93,8 +96,19 @@ const Account = () => {
                                 margin: 'auto',
                             }} variant="contained" onClick={() => (setSuccessMessage(true))}>Skontaktuj się</Button>
                             <br/>
-
-
+                            {accountData?.id === Number(localStorage.getItem("accountId")) &&
+                                <Button sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    margin: 'auto',
+                                    backgroundColor: 'red',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(207, 2, 2)', // Zmniejszenie przejrzystości podczas najechania
+                                    },
+                                }} variant="contained" onClick={() => setIsEditAccountDataDialogOpen(true)}>Edytuj swoje
+                                    dane</Button>}
+                            <br/>
                         </Paper>
                     </Box>
                 </Grid>
@@ -117,9 +131,9 @@ const Account = () => {
                                 ))}
                             </Grid>
 
-                            {/* Przycisk do strony z wypożyczonymi przedmiotami */}
+                            {/* Przycisk do strony z wypożyczonymi przedmiotami
                             <Button variant="contained" href="/rented-items">Zobacz wypożyczone przedmioty</Button>
-
+*/}
 
                         </Box>
                     </Paper>
@@ -142,31 +156,40 @@ const Account = () => {
                                 width: '100%', // W pełnej szerokości kontenera
                             }}>
                                 <Typography sx={{paddingLeft: '8px'}} variant={"h6"}>Opinie użytkowników</Typography>
-                                <Box sx={{ flex: 1 }} /> {/* Elastyczny element do rozciągnięcia, aby "Śr. ocena" był przyklejony do prawego brzegu */}
+                                <Box
+                                    sx={{flex: 1}}/> {/* Elastyczny element do rozciągnięcia, aby "Śr. ocena" był przyklejony do prawego brzegu */}
                                 {accountData?.avgRating !== null ?
-                                <Typography variant={"h6"}>
-                                    Średnia ocena: {accountData?.avgRating.toFixed(1)}
-                                </Typography>
-                                : <div/>}
+                                    <Typography variant={"h6"}>
+                                        Średnia ocena: {accountData?.avgRating.toFixed(1)}
+                                    </Typography>
+                                    : <div/>}
                             </Box>
 
                             <Grid container spacing={2} pl={2}>
                                 {opinions && opinions.map((opinion, index) => (
-                                    <OpinionWindow key={index} opinion={opinion} />
+                                    <OpinionWindow key={index} opinion={opinion}/>
                                 ))}
                             </Grid>
 
-                            <Button variant="contained" href="/rented-items">
+                            {/*<Button variant="contained" href="/rented-items">
                                 Pokaż więcej opinii
-                            </Button>
+                            </Button>*/}
                         </Box>
 
                     </Paper>
                 </Grid>
             </Grid>
+            {accountData?.id === Number(localStorage.getItem("accountId")) &&
+                <EditAccountDataDialog open={isEditAccountDataDialogOpen}
+                                       onClose={() => setIsEditAccountDataDialogOpen(false)} email={accountData.email}
+                                       firstName={accountData.firstName} lastName={accountData.lastName}
+                                       phoneNumber={accountData.phoneNumber} photoSrc={accountData.photo}
+                                       latitude={accountData.latitude} longitude={accountData.longitude}
+                                       address={accountData.locationName}/>
+            }
             <SuccessDialog open={successMessage} onClose={handleCloseSnackbar}
                            textOnSuccess={"Email: " + accountData?.email +
-                               `\n Numer telefonu: ` + accountData?.phoneNumber} titleSuccess={"Skontaktuj się:"}/>
+                               `\n Numer telefonu: ` + accountData?.phoneNumber} titleSuccess={"Skontaktuj się"}/>
 
             <Footer/>
         </div>

@@ -11,6 +11,7 @@ import MyItems from "./pages/MyItems";
 import EditItem from "./pages/EditItem";
 import MyRents from "./pages/MyRents";
 import Account from "./pages/Account";
+import MyChats from "./pages/MyChats";
 
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
                 <Route path="/edit-item/:itemId" Component={EditItem}/>
                 <Route path="/my-rents" Component={MyRents}/>
                 <Route path="/account/:accountId" Component={Account}/>
+                <Route path="/my-chats" Component={MyChats}/>
             </Routes>
         </Router>
     );

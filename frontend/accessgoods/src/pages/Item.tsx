@@ -11,6 +11,7 @@ import TryToRent from "../components/structures/TryToRent";
 import {getUnavailableDates} from "../components/endpoints/Rents";
 import {Calendar} from "react-date-range";
 import {useNavigate} from "react-router";
+import {createOrGetChatRoom} from "../components/endpoints/Chats";
 
 
 const homeContentStyle = {
@@ -42,6 +43,14 @@ const Item = () => {
         };
         fetchItem();
     }, [itemId]);
+
+    async function handleCreateMessage() {
+        const status = await createOrGetChatRoom(itemDto!.itemId)
+        if(status === 200) {
+            navigate(`/my-chats`);
+        }
+    }
+
     return (
         <div>
             <Header/>
@@ -151,6 +160,10 @@ const Item = () => {
                                                                 reservedDates={unavailableDates}
                                                                 pricePerDay={itemDto!.pricePerDay}
                                                                 itemId={Number(itemId!)}/>
+                                                            <br/>
+                                                            <Button sx={{marginLeft: '6vh',}} variant="contained"
+                                                                    onClick={handleCreateMessage}>Wyślij wiadomość
+                                                                </Button>
                                                         </Box>
                                                         :
                                                         <Box>

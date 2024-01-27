@@ -54,7 +54,6 @@ const AddOrEditOpinionDialog: React.FC<AddOpinionDialogProps> = ({
     }
 
     async function handleDeleteOpinion() {
-        console.log(opinionId, "XD")
         await deleteOpinion(opinionId!);
         onClose();
     }

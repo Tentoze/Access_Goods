@@ -4,7 +4,7 @@ import {
     Avatar,
     Box,
     Button,
-    Container,
+    Container, IconButton,
     Menu,
     MenuItem,
     Rating,
@@ -19,6 +19,8 @@ import {Link} from "react-router-dom";
 import SuccessDialog from "./SuccessDialog";
 import AddOrEditOpinionDialog from "./AddOrEditOpinionDialog";
 import {getOpinionForSpecificUserAndFeedbackTarget} from "../endpoints/Opinions";
+import {SendIcon} from "lucide-react";
+import {createOrGetChatRoom} from "../endpoints/Chats";
 
 
 interface rentWindowProps {
@@ -92,7 +94,7 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
             setFeedbackTarget(feedback);
             if (Number(accountId) === rentDto.lendingAccountId) {
                 setUserDetails(await getAccount(rentDto.borrowingAccountId));
-                setStatusOptions((await getChangeStatusPossibilities(rentDto.itemId)).map((status) => mapStatusToPolish(status)))
+                setStatusOptions((await getChangeStatusPossibilities(rentDto.id)).map((status) => mapStatusToPolish(status)))
                 try {
                     const data = await getOpinionForSpecificUserAndFeedbackTarget(rentDto.borrowingAccountId, feedback)
                     setOpinion(data);
@@ -124,7 +126,7 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
         const responseStatus = await changeRentStatus(rentDto.id, englishStatus);
         if (responseStatus === 200) {
             setSuccessMessage(true);
-            setStatusOptions((await getChangeStatusPossibilities(rentDto.itemId)).map((status) => mapStatusToPolish(status)))
+            setStatusOptions((await getChangeStatusPossibilities(rentDto.id)).map((status) => mapStatusToPolish(status)))
         }
     };
 
@@ -160,6 +162,13 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
         () => {
             checkCurrentAccountAndGetRentAccountInformation();
         }, []);
+
+    async function handleCreateMessage() {
+        const status = await createOrGetChatRoom(rentDto.itemId)
+        if(status === 200) {
+            navigate(`/my-chats`);
+        }
+    }
 
     return (
         <Box
@@ -207,6 +216,10 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
                                     {userDetails.firstName} {userDetails.lastName}
                                 </Typography>
                             </Link>
+                                <IconButton onClick={handleCreateMessage}>
+                                    <SendIcon/>
+                                </IconButton>
+
                         </Box>
                         <Box sx={{
                             display: 'flex',
@@ -261,7 +274,7 @@ const RentWindow = ({rentDto}: rentWindowProps) => {
                                 ))}
                             </Menu>
                             <Box sx={{float: 'right', marginLeft: '8px'}}>
-                                {rentStatus !== rentDto.rentStatus ?
+                                {rentStatus !== mapStatusToPolish(rentDto.rentStatus) ?
                                     (
                                         <Button sx={{
                                             float: 'right',
